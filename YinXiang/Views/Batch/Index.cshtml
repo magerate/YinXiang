@@ -1,4 +1,7 @@
-﻿<div class="container-fluid">
+﻿@using YinXiang.Models
+@model BatchInfo
+
+<div class="container-fluid">
 
     <!-- Breadcrumbs-->
     @*<ol class="breadcrumb">
@@ -14,16 +17,16 @@
     <div class="card mb-3">
         <div class="card-header">
             @*<i class="fas fa-table"></i>
-        Data Table Example*@
+                Data Table Example*@
             <ul class="nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">申请批次码</a>
+                    <a class="btn" href="#" data-toggle="modal" data-target="#requestBatchCode">申请批次码</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">手动输入</a>
+                    <a class="btn" href="#" data-toggle="modal" data-target="#manualInput">手动输入</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">上传批次信息</a>
+                    <a class="btn" href="#">上传批次信息</a>
                 </li>
             </ul>
         </div>
@@ -37,4 +40,89 @@
         <hr>
         <p>This is a great starting point for new custom pages.</p>*@
 
+</div>
+
+
+<div class="modal fade" id="requestBatchCode" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">申请批次码</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("RequestBatchCode", "Batch", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">产品类别</label>
+                        @Html.TextBoxFor(m => m.ProductType, new { @class = "form-control", @placeholder = "产品类别" })
+                        @*<input type="text" class="form-control" id="productType" placeholder="产品类别">*@
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">数量</label>
+                        @Html.TextBoxFor(m => m.Quantity, new { @class = "form-control", @placeholder = "数量" })
+                        @*<input type="text" class="form-control" id="productQuantity" placeholder="数量">*@
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">日期</label>
+                        <input type="date" class="form-control">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">确定</button>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+
+
+<div class="modal fade" id="manualInput" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">手动输入批次码</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            @using (Html.BeginForm("ManualInput", "Batch", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+
+
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">批次码</label>
+                        <input type="text" class="form-control" id="Code" name="Code" placeholder="批次码">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">产品类别</label>
+                        <input type="text" class="form-control" id="ProductType" name="ProductType" placeholder="产品类别">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">数量</label>
+                        <input type="text" class="form-control" id="Quantity" name="Quantity" placeholder="数量">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">日期</label>
+                        <input type="date" class="form-control" id="Date" name="Date">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">确定</button>
+                </div>
+            }
+            </div>
+    </div>
 </div>

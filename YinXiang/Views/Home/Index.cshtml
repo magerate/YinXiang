@@ -3,6 +3,9 @@
 @*@{
         ViewBag.Title = "Home Page";
     }*@
+@{
+    Layout = "~/Views/Shared/_LayoutNotAuthed.cshtml";
+}
 
 <div class="card card-login mx-auto mt-5">
     <div class="card-header">Login</div>
@@ -13,10 +16,10 @@
             <div class="form-group">
                 <div class="form-label-group">
                     @*@Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-        </div>*@
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>*@
                     @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
                     @*<input type="email" id="Email" class="form-control" placeholder="Email address" required="required" autofocus="autofocus">*@
                     @*<label for="inputEmail">Email address</label>*@
