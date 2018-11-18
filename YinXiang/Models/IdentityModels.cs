@@ -22,6 +22,8 @@ namespace YinXiang.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        public virtual IDbSet<BatchInfo> BatchInfos { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

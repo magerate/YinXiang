@@ -24,11 +24,18 @@ namespace YinXiang
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap/bootstrap.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap-datepicker").Include(
+                     "~/Scripts/bootstrap-datepicker/bootstrap-datepicker.min.js"));
+
+            //bundles.Add(new ScriptBundle("~/bundles/bootstrap-datepicker-local").Include(
+            //     );
+
             bundles.Add(new ScriptBundle("~/bundles/sb_admin").Include(
                      "~/Scripts/sb-admin.min.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap/bootstrap.min.css",
+                      "~/Content/bootstrap-datepicker/bootstrap-datepicker3.min.css",
                        "~/Content/fontawesome/all.min.css",
                        "~/Content/datatables/dataTables.bootstrap4.css",
                       "~/Content/sb-admin.css"));

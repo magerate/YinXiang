@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="zh-cn">
 
 <head>
 
@@ -13,7 +13,6 @@
 
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
 </head>
 
 <body id="page-top">
@@ -29,18 +28,18 @@
         <!-- Navbar Search -->
         <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                @*<input type="text" class="form-control" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
                 <div class="input-group-append">
                     <button class="btn btn-primary" type="button">
                         <i class="fas fa-search"></i>
                     </button>
-                </div>
+                </div>*@
             </div>
         </form>
 
         <!-- Navbar -->
         <ul class="navbar-nav ml-auto ml-md-0">
-            <li class="nav-item dropdown no-arrow mx-1">
+            @*<li class="nav-item dropdown no-arrow mx-1">
                 <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-bell fa-fw"></i>
                     <span class="badge badge-danger">9+</span>
@@ -51,8 +50,8 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">Something else here</a>
                 </div>
-            </li>
-            <li class="nav-item dropdown no-arrow mx-1">
+            </li>*@
+            @*<li class="nav-item dropdown no-arrow mx-1">
                 <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-envelope fa-fw"></i>
                     <span class="badge badge-danger">7</span>
@@ -63,20 +62,20 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="#">Something else here</a>
                 </div>
-            </li>
-            <li class="nav-item dropdown no-arrow">
+            </li>*@
+            <li class="nav-item dropdown no-arrow mx-1">
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-user-circle fa-fw"></i>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="#">Settings</a>
-                    <a class="dropdown-item" href="#">Activity Log</a>
+                    @*<a class="dropdown-item" href="#">Settings</a>*@
+                    @*<a class="dropdown-item" href="#">Activity Log</a>*@
                     <div class="dropdown-divider"></div>
 
                     @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
                     {
-                    @Html.AntiForgeryToken()
-                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
+                        @Html.AntiForgeryToken()
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">登出</a>
                     }
                 </div>
             </li>
@@ -89,37 +88,38 @@
         <!-- Sidebar -->
         <ul class="sidebar navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="Batch">
+                <a class="nav-link" href="/Batch">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>批次管理</span>
                 </a>
             </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item">
+                @*<a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">*@
+                <a class="nav-link" href="/ProductionResult">
                     <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
+                    <span>生产结果</span>
                 </a>
-                <div class="dropdown-menu" aria-labelledby="pagesDropdown">
-                    <h6 class="dropdown-header">Login Screens:</h6>
-                    <a class="dropdown-item" href="login.html">Login</a>
-                    <a class="dropdown-item" href="register.html">Register</a>
-                    <a class="dropdown-item" href="forgot-password.html">Forgot Password</a>
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Other Pages:</h6>
-                    <a class="dropdown-item" href="404.html">404 Page</a>
-                    <a class="dropdown-item active" href="blank.html">Blank Page</a>
-                </div>
-            </li>
+                    @*<div class="dropdown-menu" aria-labelledby="pagesDropdown">
+            <h6 class="dropdown-header">Login Screens:</h6>
+            <a class="dropdown-item" href="login.html">Login</a>
+            <a class="dropdown-item" href="register.html">Register</a>
+            <a class="dropdown-item" href="forgot-password.html">Forgot Password</a>
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header">Other Pages:</h6>
+            <a class="dropdown-item" href="404.html">404 Page</a>
+            <a class="dropdown-item active" href="blank.html">Blank Page</a>
+        </div>*@
+</li>
             <li class="nav-item">
-                <a class="nav-link" href="charts.html">
+                <a class="nav-link" href="/ManageAccount">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Charts</span>
+                    <span>账号管理</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="tables.html">
+                <a class="nav-link" href="/ManageDevice">
                     <i class="fas fa-fw fa-table"></i>
-                    <span>Tables</span>
+                    <span>设备管理</span>
                 </a>
             </li>
         </ul>
@@ -167,19 +167,26 @@
 
     <!-- Bootstrap core JavaScript-->
     @*<script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+        <!-- Core plugin JavaScript-->
+        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin.min.js"></script>*@
+        <!-- Custom scripts for all pages-->
+        <script src="js/sb-admin.min.js"></script>*@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/bootstrap-datepicker")
+    <script src="/Scripts/bootstrap-datepicker/locals/bootstrap-datepicker.zh-CN.min.js" charset="utf-8"></script>
     @Scripts.Render("~/bundles/jquery_easing")
     @Scripts.Render("~/bundles/sb_admin")
     @RenderSection("scripts", required: false)
 
+    <script type="text/javascript">
+        $('.datepicker').datepicker({
+            language: 'zh-CN'
+        });
+    </script>
 </body>
 
 </html>
