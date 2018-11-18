@@ -1,5 +1,5 @@
 ﻿@using YinXiang.Models
-
+@model IEnumerable<ApplicationUser>
 
 <div class="container-fluid">
 
@@ -13,6 +13,72 @@
     <h3>账号管理</h3>
     <hr>
 
+    <div class="card mb-3">
+        <div class="card-header">
+            @*<i class="fas fa-table"></i>
+                Data Table Example*@
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="btn" href="#" data-toggle="modal" data-target="#addAccount">添加账号</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                @{
+                    var grid = new WebGrid(Model);
+                }
+                @grid.GetHtml(columns: grid.Columns(
+                            grid.Column("UserName", header: "用户名"),
+                            grid.Column("CreateTime", header: "创建日期", format: @<text>@item.CreateTime.ToString("d")</text>)
+                  ),
+                  tableStyle: "table table-bordered"
+            )
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<div class="modal fade" id="addAccount" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">申请批次码</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("addAccount", "ManageAccount", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">用户名</label>
+                        <input type="text" class="form-control" id="UserName" name="UserName" placeholder="用户名">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">密码</label>
+                        <input type="password" id="Password" name="Password" class="form-control" required="required">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">密码</label>
+                        <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required="required">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">确定</button>
+                </div>
+            }
+        </div>
+
+    </div>
 </div>
 
 

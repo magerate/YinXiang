@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -11,6 +12,8 @@ namespace YinXiang.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
+        public DateTime CreateTime { get; set; } = DateTime.Now;
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -22,7 +25,8 @@ namespace YinXiang.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public virtual IDbSet<BatchInfo> BatchInfos { get; set; }
+        public IDbSet<BatchInfo> BatchInfos { get; set; }
+        public IDbSet<DeviceInfo> DeviceInfos { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
@@ -55,8 +59,8 @@ namespace YinXiang.Models
             var userManager = new UserManager<ApplicationUser>(userStore);
             ApplicationUser admin = new ApplicationUser();
             //admin.Email = "admin";
-            admin.Email = "admin@admin.com";
-            admin.UserName = "admin@admin.com";
+            //admin.Email = "admin@admin.com";
+            admin.UserName = "admin";
 
             //if (userManager.FindByEmail(admin.Email)
 

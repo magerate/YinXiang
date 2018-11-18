@@ -24,7 +24,9 @@ namespace YinXiang.Controllers
         // GET: Batch
         public ActionResult Index()
         {
-            return View();
+            IEnumerable<BatchInfo> model = ApplicationContext.BatchInfos;
+ 
+            return View(model);
         }
 
         [HttpPost]

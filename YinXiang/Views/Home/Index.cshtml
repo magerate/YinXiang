@@ -1,14 +1,12 @@
 ﻿@using YinXiang.Models
 @model LoginViewModel
-@*@{
-        ViewBag.Title = "Home Page";
-    }*@
+
 @{
     Layout = "~/Views/Shared/_LayoutNotAuthed.cshtml";
 }
 
 <div class="card card-login mx-auto mt-5">
-    <div class="card-header">Login</div>
+    <div class="card-header">登陆</div>
     <div class="card-body">
         @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
         {
@@ -16,11 +14,12 @@
             <div class="form-group">
                 <div class="form-label-group">
                     @*@Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-                        <div class="col-md-10">
-                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                        </div>*@
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        </div>*@
+                    @*@Html.TextBoxFor(m => m.Email, new { @class = "form-control" })*@
+                    <input class="form-control" data-val="true" data-val-required="用户名字段是必需的。" id="UserName" name="UserName" type="text" value="" />
                     @*<input type="email" id="Email" class="form-control" placeholder="Email address" required="required" autofocus="autofocus">*@
                     @*<label for="inputEmail">Email address</label>*@
                 </div>
@@ -36,17 +35,17 @@
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" value="remember-me">
-                        Remember Password
+                        记住密码
                     </label>
                 </div>
             </div>
-            <input type="submit" value="Login" class="btn btn-primary btn-block" />
+            <input type="submit" value="登陆" class="btn btn-primary btn-block" />
             @*<a class="btn btn-primary btn-block" href="index.html">Login</a>*@
         }
 
         <div class="text-center">
-            <a class="d-block small mt-3" href="register.html">Register an Account</a>
-            <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
+            <a class="d-block small mt-3" href="register.html">注册</a>
+            <a class="d-block small" href="forgot-password.html">忘记密码?</a>
         </div>
     </div>
 </div>

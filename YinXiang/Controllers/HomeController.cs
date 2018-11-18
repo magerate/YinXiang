@@ -13,9 +13,9 @@ namespace YinXiang.Controllers
         {
             if (Request.IsAuthenticated)
             {
-                return Redirect("batch");
+                return Redirect("/batch");
             }
-            return View();
+            return Redirect("/account/login");
         }
 
         public ActionResult About()
