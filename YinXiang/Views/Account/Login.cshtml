@@ -14,12 +14,13 @@
             <div class="form-group">
                 <div class="form-label-group">
                     @*@Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-                        <div class="col-md-10">
-                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                        </div>*@
-                    @*@Html.TextBoxFor(m => m.Email, new { @class = "form-control" })*@
-                    <input class="form-control" data-val="true" data-val-required="用户名字段是必需的。" id="UserName" name="UserName" type="text" value="" />
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+        </div>*@
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                    @*<input class="form-control" data-val="true" data-val-required="用户名字段是必需的。" id="UserName" name="UserName" type="text" value="" />*@
                     @*<input type="email" id="Email" class="form-control" placeholder="Email address" required="required" autofocus="autofocus">*@
                     @*<label for="inputEmail">Email address</label>*@
                 </div>
@@ -27,6 +28,7 @@
             <div class="form-group">
                 <div class="form-label-group">
                     @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                     @*<input type="password" id="Password" class="form-control" placeholder="Password" required="required">*@
                     @*<label for="inputPassword">Password</label>*@
                 </div>
