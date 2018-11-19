@@ -27,6 +27,7 @@ namespace YinXiang.Models
     {
         public IDbSet<BatchInfo> BatchInfos { get; set; }
         public IDbSet<DeviceInfo> DeviceInfos { get; set; }
+        public IDbSet<ProductionInfo> ProductionInfos { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
