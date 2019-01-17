@@ -1,0 +1,20 @@
+﻿@using YinXiang.Models.Dtos
+@model IList<BatchDto>
+@{ Layout = null;}
+<div class="table-responsive">
+    @{
+        var grid = new WebGrid(Model, defaultSort: "batchNo", rowsPerPage: 10);
+    }
+    @grid.GetHtml(columns: grid.Columns(
+             grid.Column("batchNo", header: "批次码"), //format: item => Html.ActionLink((string)item.batchNo, "Details", "Batch", new { code = item.batchNo })),
+             grid.Column("name", header: "产品名称"),
+             grid.Column("sku", header: "产品规格"),
+             grid.Column("batchDate", header: "日期", format: @<text>@item.batchDate.ToString("yyyy-MM-dd")</text>),
+             grid.Column("createDate", header: "创建时间", format: @<text>@(item.createDate!=null?item.createDate.ToString("yyyy-MM-dd HH:dd:ss"):"")</text>),
+    grid.Column(format: (item) => (item.IsSent?"": Html.Raw("<a id='btn_"+ item.batchNo + "' class='btn' href='javascript:void(0);'onclick='sendBatchNoToDevice(\"" + item.batchNo + "\")'>发送</a>")))
+             //grid.Column(format: (item) => Html.Raw("<a class='btn' href='#' data-toggle='modal' data-target='#sendBatch' data-whatever='" + item.batchNo + "'>发送</a>"))
+             ),
+               tableStyle: "table table-bordered"
+               )
+</div>
+

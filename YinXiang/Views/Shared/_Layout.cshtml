@@ -186,6 +186,16 @@
         $('.datepicker').datepicker({
             language: 'zh-CN'
         });
+        (function ($) {
+            $.fn.trimSerialize = function (selector) {
+                var clonedObject = $(this);
+                selector = (selector === undefined) ? 'input' : selector;
+                clonedObject.find(selector).each(function () {
+                    $(this).val($.trim($(this).val()));
+                });
+                return clonedObject.serialize();
+            };
+        })(jQuery);
     </script>
 </body>
 
