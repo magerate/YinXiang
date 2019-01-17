@@ -39,4 +39,8 @@ namespace YinXiang.Models.Dtos
         public string IP { get; set; }
         public string Account { get; set; }
     }
+    public class BatchDeviceSearchDto:SendBatchDto
+    {
+        public DateTime? CreateTime { get; set; }
+    }
 }

@@ -280,6 +280,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ManageDeviceController.cs" />
     <Compile Include="Controllers\ProductionResultController.cs" />
+    <Compile Include="Controllers\SendBatchDeviceHistoryController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -349,6 +350,7 @@
     <Content Include="Scripts\bootstrap\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap\bootstrap.js" />
     <Content Include="Scripts\bootstrap\bootstrap.min.js" />
+    <Content Include="Scripts\common.js" />
     <Content Include="Scripts\jquery_easing\jquery.easing.compatibility.js" />
     <Content Include="Scripts\jquery_easing\jquery.easing.js" />
     <Content Include="Scripts\jquery_easing\jquery.easing.min.js" />
@@ -433,6 +435,8 @@
     <Content Include="Views\ManageDevice\Index.cshtml" />
     <Content Include="Views\ProductionResult\Index.cshtml" />
     <Content Include="Views\Batch\List.cshtml" />
+    <Content Include="Views\SendBatchDeviceHistory\Index.cshtml" />
+    <Content Include="Views\SendBatchDeviceHistory\List.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
