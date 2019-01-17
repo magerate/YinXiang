@@ -1,0 +1,46 @@
+﻿<div class="container-fluid">
+    <h3>发送记录</h3>
+    <hr>
+    <div>
+        <form id="frmSendBatchDeviceHistorySearch">
+            <div class="form-row col-md-12">
+                <div class="form-group col-md-3">
+                    <label for="formGroupExampleInput">批次码</label>
+                    <input type="text" class="form-control" id="BatchNo" name="BatchNo" placeholder="批次码">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="formGroupExampleInput">设备名称</label>
+                    <input type="text" class="form-control" id="DeviceName" nameame="DeviceName" placeholder="设备名称">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="formGroupExampleInput">日期</label>
+                    <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd">
+                        <input type="text" class="form-control" name="CreateTime" value="@(ViewBag.CreateTime.ToString("yyyy-MM-dd"))">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label for="formGroupExampleInput"> </label>
+                    <a class="btn" href="javascript:void(0);" onclick="loadSendBatchDeviceHistoryData()">获取</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card mb-3">
+        <div id="SendBatchDeviceHistoryListDiv" class="card-body">
+        </div>
+    </div>
+    <!-- Page Content -->
+    @*<h1>Blank Page</h1>
+        <hr>
+        <p>This is a great starting point for new custom pages.</p>*@
+</div>
+<script>
+    function loadSendBatchDeviceHistoryData() {
+        $.get('/SendBatchDeviceHistory/List?' + $('#frmSendBatchDeviceHistorySearch').trimSerialize(), function (data) {
+            $('#SendBatchDeviceHistoryListDiv').html(data);
+        });
+    }
+</script>
