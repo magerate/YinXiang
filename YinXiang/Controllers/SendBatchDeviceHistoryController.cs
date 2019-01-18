@@ -33,7 +33,7 @@ namespace YinXiang.Controllers
                 search = new BatchDeviceSearchDto();
             }
             var Model = ApplicationContext.SendBatchDeviceHistories.ToList();
-            if (!search.CreateTime.HasValue)
+            if (search.CreateTime.HasValue)
             {
                 DateTime startBatchDate = search.CreateTime.Value.Date;
                 DateTime endBatchDate = startBatchDate.AddDays(1).AddSeconds(-1);

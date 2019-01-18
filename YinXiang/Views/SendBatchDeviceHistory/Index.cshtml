@@ -1,7 +1,7 @@
 ﻿<div class="container-fluid">
     <h3>发送记录</h3>
     <hr>
-    <div>
+    <div style="display:none;">
         <form id="frmSendBatchDeviceHistorySearch">
             <div class="form-row col-md-12">
                 <div class="form-group col-md-3">
@@ -30,6 +30,7 @@
     </div>
     <div class="card mb-3">
         <div id="SendBatchDeviceHistoryListDiv" class="card-body">
+            @Html.Action("List", "SendBatchDeviceHistory")
         </div>
     </div>
     <!-- Page Content -->

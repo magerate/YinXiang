@@ -13,7 +13,7 @@
     <div>
         <form id="frmBatchSearch">
             <div class="form-row col-md-12">
-                <div class="form-group col-md-3">
+                @*<div class="form-group col-md-3">
                     <label for="formGroupExampleInput">批次码</label>
                     <input type="text" class="form-control" id="batchNo" name="batchNo" placeholder="批次码">
                 </div>
@@ -24,7 +24,7 @@
                 <div class="form-group col-md-3">
                     <label for="formGroupExampleInput">产品规格</label>
                     <input type="text" class="form-control" id="sku" name="sku" placeholder="产品类别">
-                </div>
+                </div>*@
                 <div class="form-group col-md-3">
                     <label for="formGroupExampleInput">日期</label>
                     <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd">
@@ -35,7 +35,8 @@
                     </div>
                 </div>
                 <div class="form-group col-md-3">
-                    <a class="btn" href="javascript:void(0);" onclick="loadBatchData()">获取</a>
+                    <label for="formGroupExampleInput"></label>
+                    <div><a class="btn" href="javascript:void(0);" onclick="loadBatchData()">获取</a></div>
                 </div>
             </div>
         </form>
@@ -112,8 +113,9 @@
         $.post('/Batch/SendBatchNoes', 
         { 'BatchNo': batchNo, 'DeviceName': 'test', 'IP': '127.0.0.0', 'Account': 'test account' },
         function (result) {
-            if (result == "发送成功")
-                $('#btn_' + batchNo).hide();
+            if (result == "发送成功") {
+                $('#btn_' + batchNo).parent().html('已发送');
+            }
             $('#alertMsgModal .modal-body').html(result);
             $('#alertMsgModal').modal('show');
         })
