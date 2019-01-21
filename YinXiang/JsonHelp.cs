@@ -490,4 +490,56 @@ namespace YinXiang
         #endregion
 
     }
+
+    public class TypeHelp
+    {
+        #region Obj Copy
+        public static T ObjCopy<s, T>(s source, T target)
+        {
+            if (source == null)
+                throw new ArgumentNullException("source");
+            if (target == null)
+                throw new ArgumentNullException("target");
+            Type targetType = target.GetType();
+            foreach (PropertyInfo property in source.GetType().GetProperties())
+            {
+                PropertyInfo targetProperty = targetType.GetProperty(property.Name);
+                if (targetProperty != null && targetProperty.PropertyType == property.PropertyType)
+                {
+                    targetProperty.SetValue(target, property.GetValue(source, null), null);
+                }
+            }
+            return target;
+        }
+
+        public static T ObjCopy<s, T>(s source, T target, bool allowOrException, params string[] propertyNames)
+        {
+            if (source == null)
+                throw new ArgumentNullException("source");
+            if (target == null)
+                throw new ArgumentNullException("target");
+
+            Type targetType = target.GetType();
+            IList<PropertyInfo> properties;
+            if (allowOrException)
+            {
+                properties = source.GetType().GetProperties().Where(m => propertyNames.Contains(m.Name)).ToList();
+            }
+            else
+            {
+                properties = source.GetType().GetProperties().Where(m => !propertyNames.Contains(m.Name)).ToList();
+            }
+            foreach (PropertyInfo property in properties)
+            {
+                PropertyInfo targetProperty = targetType.GetProperty(property.Name);
+                if (targetProperty != null && targetProperty.PropertyType == property.PropertyType)
+                {
+                    targetProperty.SetValue(target, property.GetValue(source, null), null);
+                }
+            }
+            return target;
+        }
+        #endregion
+
+    }
 }

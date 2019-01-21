@@ -21,7 +21,7 @@ namespace YinXiang.Controllers
             {
                 return HttpContext.GetOwinContext().Get<ApplicationDbContext>();
             }
-            
+
         }
 
         // GET: Batch
@@ -41,7 +41,7 @@ namespace YinXiang.Controllers
                 search.batchDate = DateTime.Now;
             DateTime startBatchDate = search.batchDate.Value.Date;
             DateTime endBatchDate = startBatchDate.AddDays(1).AddSeconds(-1);
-            var client = new RestClient("http://x97700.iok.la:32611/ycProductionController.do?getListByBatchDate&batchDate="+ startBatchDate.ToString("yyyy-MM-dd"));
+            var client = new RestClient("http://x97700.iok.la:32611/ycProductionController.do?getListByBatchDate&batchDate=" + startBatchDate.ToString("yyyy-MM-dd"));
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             if (response.StatusCode != System.Net.HttpStatusCode.OK || string.IsNullOrEmpty(response.Content))
@@ -50,10 +50,10 @@ namespace YinXiang.Controllers
             }
             var content = response.Content;
             BatchResultDto batchResultDto = JsonHelp.ToObj<BatchResultDto>(response.Content);
-            IList<BatchInfo> batchInfoDatas= new List<BatchInfo>();            
+            IList<BatchInfo> batchInfoDatas = new List<BatchInfo>();
             foreach (var item in batchResultDto.obj)
             {
-                var oldItem= ApplicationContext.BatchInfos.Where(m=>m.BatchNo==item.batchNo).FirstOrDefault();
+                var oldItem = ApplicationContext.BatchInfos.Where(m => m.BatchNo == item.batchNo).FirstOrDefault();
                 if (oldItem == null)
                 {
                     BatchInfo batchInfo = new BatchInfo();
@@ -89,16 +89,40 @@ namespace YinXiang.Controllers
             }
             if (!string.IsNullOrEmpty(search.sku))
             {
-                batchResultDto.obj= batchResultDto.obj.Where(m => m.sku.Contains(search.sku)).ToList();
+                batchResultDto.obj = batchResultDto.obj.Where(m => m.sku.Contains(search.sku)).ToList();
             }
+            search.sort = string.IsNullOrEmpty(search.sort) ? "batchNo" : search.sort;
+            search.sortdir = string.IsNullOrEmpty(search.sortdir) ? "ASC" : search.sortdir;
+            if (search.sort == "name")
+            {
+                batchResultDto.obj = (search.sortdir == "DESC" ? batchResultDto.obj.OrderByDescending(m => m.name) : batchResultDto.obj.OrderBy(m => m.name)).ToList();
+            }
+            else if (search.sort == "sku")
+            {
+                batchResultDto.obj = (search.sortdir == "DESC" ? batchResultDto.obj.OrderByDescending(m => m.sku) : batchResultDto.obj.OrderBy(m => m.sku)).ToList();
+            }
+            else if (search.sort == "batchDate")
+            {
+                batchResultDto.obj = (search.sortdir == "DESC" ? batchResultDto.obj.OrderByDescending(m => m.batchDate) : batchResultDto.obj.OrderBy(m => m.batchDate)).ToList();
+            }
+            else if (search.sort == "createDate")
+            {
+                batchResultDto.obj = (search.sortdir == "DESC" ? batchResultDto.obj.OrderByDescending(m => m.createDate) : batchResultDto.obj.OrderBy(m => m.createDate)).ToList();
+            }
+            else
+            {
+                batchResultDto.obj = (search.sortdir == "DESC" ? batchResultDto.obj.OrderByDescending(m => m.batchNo) : batchResultDto.obj.OrderBy(m => m.batchNo)).ToList();
+            }
+            ViewBag.TotalRowCounts = batchResultDto.obj.Count;
+            batchResultDto.obj = batchResultDto.obj.Skip(((search.page > 0 ? search.page : 1) - 1) * search.pageSize).Take(search.pageSize).ToList();
             return View(batchResultDto.obj);
         }
 
         [HttpPost]
         public ActionResult SendBatchNoes(SendBatchDto sendBatchDto)
         {
-            SendBatchDeviceHistory sendBatchDeviceHistory= ApplicationContext.SendBatchDeviceHistories.Where(m => m.BatchNo == sendBatchDto.BatchNo).FirstOrDefault();
-            if(sendBatchDeviceHistory!=null)
+            SendBatchDeviceHistory sendBatchDeviceHistory = ApplicationContext.SendBatchDeviceHistories.Where(m => m.BatchNo == sendBatchDto.BatchNo).FirstOrDefault();
+            if (sendBatchDeviceHistory != null)
                 return Content("此批次码不能重复发送！");
             sendBatchDeviceHistory = new SendBatchDeviceHistory();
             sendBatchDeviceHistory.BatchNo = sendBatchDto.BatchNo;
@@ -108,6 +132,46 @@ namespace YinXiang.Controllers
             ApplicationContext.SendBatchDeviceHistories.Add(sendBatchDeviceHistory);
             ApplicationContext.SaveChanges();
             return Content("发送成功");
+        }
+
+        [HttpPost]
+        public ActionResult UpdateBatchStock(SendBatchStockDto entity)
+        {
+            var batchItem = ApplicationContext.BatchInfos.Where(m => m.BatchNo == entity.batchNo).FirstOrDefault();
+            if (batchItem == null)
+            {
+                return Content("此批次码不存在");
+            }
+            var client = new RestClient("http://x97700.iok.la:32611/ycProductionController.do?inByBatchNo");
+            var request = new RestRequest(Method.POST);
+            request.AddParameter("multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+                "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"batchNo\"\r\n\r\n" 
+                + batchItem.RetrospectNo
+                + "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"totalNum\"\r\n\r\n" 
+                + entity.totalNumber + "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--", ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK || string.IsNullOrEmpty(response.Content))
+            {
+                return Content(response.Content);
+            }
+            var content = response.Content;
+            BatchResultDto batchResultDto = JsonHelp.ToObj<BatchResultDto>(response.Content);
+            if (!batchResultDto.success)
+            {
+                return Content(response.Content);
+            }
+            UpdateBatchStockHistory updateBatchStockHistory = new UpdateBatchStockHistory();
+            updateBatchStockHistory.BatchNo = batchItem.BatchNo;
+            updateBatchStockHistory.TotalNumber = entity.totalNumber;
+            ApplicationContext.UpdateBatchStockHistories.Add(updateBatchStockHistory);
+            ApplicationContext.SaveChanges();
+            if (batchItem != null)
+            {
+                batchItem.Quantity = entity.totalNumber;
+                ApplicationContext.Entry<BatchInfo>(batchItem).State = EntityState.Modified;
+                ApplicationContext.SaveChanges();
+            }
+            return Content(response.Content);
         }
     }
 }

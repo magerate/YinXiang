@@ -280,6 +280,7 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ManageDeviceController.cs" />
     <Compile Include="Controllers\ProductionResultController.cs" />
+    <Compile Include="Controllers\UpdateBatchStockHistoryController.cs" />
     <Compile Include="Controllers\SendBatchDeviceHistoryController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -287,6 +288,7 @@
     <Compile Include="JsonHelp.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\BatchInfo.cs" />
+    <Compile Include="Models\UpdateBatchStockHistory.cs" />
     <Compile Include="Models\SendBatchDeviceHistory.cs" />
     <Compile Include="Models\DeviceInfo.cs" />
     <Compile Include="Models\Dtos\BatchDto.cs" />
@@ -437,6 +439,8 @@
     <Content Include="Views\Batch\List.cshtml" />
     <Content Include="Views\SendBatchDeviceHistory\Index.cshtml" />
     <Content Include="Views\SendBatchDeviceHistory\List.cshtml" />
+    <Content Include="Views\UpdateBatchStockHistory\Index.cshtml" />
+    <Content Include="Views\UpdateBatchStockHistory\List.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

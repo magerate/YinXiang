@@ -1,12 +1,14 @@
-﻿@using YinXiang.Models
-@model IList<SendBatchDeviceHistory>
+﻿@using YinXiang.Models.Dtos
+@model IList<SendBatchDeviceHistoryDto>
 @{ Layout = null;}
-<div class="table-responsive">
+<div class="table-responsive" id="sendBatchHistoryGrid">
     @{
-        var grid = new WebGrid(Model, defaultSort: "BatchNo", rowsPerPage: 10);
+        var grid = new WebGrid(defaultSort: "BatchNo", rowsPerPage: 20,ajaxUpdateContainerId: "sendBatchHistoryGrid",
+            ajaxUpdateCallback: "sortCallback()");
+        grid.Bind(Model, autoSortAndPage: false, rowCount: ViewBag.TotalRowCounts);
     }
     @grid.GetHtml(columns: grid.Columns(
-             grid.Column("batchNo", header: "批次码"), 
+             grid.Column("BatchNo", header: "批次码"), 
              grid.Column("DeviceName", header: "设备名称"),
              grid.Column("IP", header: "ip地址"),
              grid.Column("Account", header: "绑定账号"),
