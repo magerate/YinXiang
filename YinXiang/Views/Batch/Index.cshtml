@@ -140,13 +140,12 @@
         $.post('/Batch/UpdateBatchStock', { batchNo: batchNo, totalNumber: totalNumber},
             function (result) {
                 var objJson = eval('(' + result + ')');
-                if (!objJson.success) {
-                    $('#alertMsgModal .modal-body').html(objJson.msg);
-                    $('#alertMsgModal').modal('show');
-                    return;
+                if (objJson.success) {
+                    $('#TotalNumber').val('0');
+                    $('#updateBatchStockModal').modal('hide');
                 }
-                $('#TotalNumber').val('0');
-                $('#updateBatchStockModal').modal('hide');
+                $('#alertMsgModal .modal-body').html(objJson.msg);
+                $('#alertMsgModal').modal('show');
             })
     };
 </script>
