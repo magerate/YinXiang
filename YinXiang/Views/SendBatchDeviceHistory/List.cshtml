@@ -8,7 +8,10 @@
         grid.Bind(Model, autoSortAndPage: false, rowCount: ViewBag.TotalRowCounts);
     }
     @grid.GetHtml(columns: grid.Columns(
-             grid.Column("BatchNo", header: "批次码"), 
+             grid.Column("BatchNo", header: "批次码"),
+             grid.Column("ProductName", header: "产品名称"),
+             grid.Column("SKU", header: "产品规格"),
+             grid.Column("BatchDate", header: "日期", format: @<text>@item.batchDate.ToString("yyyy-MM-dd")</text>),
              grid.Column("DeviceName", header: "设备名称"),
              grid.Column("IP", header: "ip地址"),
              grid.Column("Account", header: "绑定账号"),
