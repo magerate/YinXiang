@@ -34,8 +34,17 @@
                                 grid.Column("Device.Type", header: "设备类型"),
                                 grid.Column("Device.IP", header: "ip地址"),
                                 grid.Column("User.UserName", header: "绑定账号"),
-                                grid.Column("Device.CreateTime", header: "添加日期", format:  @<text>@item.Device.CreateTime.ToString("d")</text>),
-                                grid.Column(format: (item) => Ajax.ActionLink("删除", "DeleteDevice", "ManageDevice", new { item.Device.Id}, new AjaxOptions { HttpMethod = "POST" }))
+                                grid.Column("Device.CreateTime", header: "添加日期", format:  @<text>@item.Device.CreateTime.ToString("d")</text>)
+                                //grid.Column(format: (item) => {
+                                //    MvcForm form = null;
+                                //    using (form = Html.BeginForm("deleteDevice", "ManageDevice", new { id = item.Device.Id }, FormMethod.Post))
+                                //    {
+                                //            <a class="btn" href="javascript:document.getElementById('logoutForm').submit()">确定</a>
+                                //    }
+                                //    return form;
+                                //}
+
+                             //)
 
                              ),
                          tableStyle: "table table-bordered")
