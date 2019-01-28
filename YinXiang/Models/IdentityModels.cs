@@ -28,6 +28,7 @@ namespace YinXiang.Models
     {
         public IDbSet<BatchInfo> BatchInfos { get; set; }
         public IDbSet<DeviceInfo> DeviceInfos { get; set; }
+        public IDbSet<DeviceAccount> DeviceAccounts { get; set; }
         public IDbSet<ProductionInfo> ProductionInfos { get; set; }
         public IDbSet<SendBatchDeviceHistory> SendBatchDeviceHistories { get; set; }
         public IDbSet<UpdateBatchStockHistory> UpdateBatchStockHistories { get; set; }
