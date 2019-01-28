@@ -1,5 +1,5 @@
 ﻿@using YinXiang.Models
-@model IEnumerable<DeviceInfo>
+@model ManageDeviceViewModel
 
 
 <div class="container-fluid">
@@ -27,13 +27,16 @@
         <div class="card-body">
             <div class="table-responsive">
                 @{
-                    var grid = new WebGrid(Model);
+                    var grid = new WebGrid(Model.Devices);
                 }
                 @grid.GetHtml(columns: grid.Columns(
-                                grid.Column("Name", header: "设备名称"),
-                                grid.Column("IP", header: "ip地址"),
-                                grid.Column("Account", header: "绑定账号"),
-                                grid.Column("CreateTime", header: "添加日期", format:  @<text>@item.CreateTime.ToString("d")</text>)
+                                grid.Column("Device.Name", header: "设备名称"),
+                                grid.Column("Device.Type", header: "设备类型"),
+                                grid.Column("Device.IP", header: "ip地址"),
+                                grid.Column("User.UserName", header: "绑定账号"),
+                                grid.Column("Device.CreateTime", header: "添加日期", format:  @<text>@item.Device.CreateTime.ToString("d")</text>),
+                                grid.Column(format: (item) => Ajax.ActionLink("删除", "DeleteDevice", "ManageDevice", new { item.Device.Id}, new AjaxOptions { HttpMethod = "POST" }))
+
                              ),
                          tableStyle: "table table-bordered")
             </div>
@@ -46,7 +49,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">申请批次码</h5>
+                <h5 class="modal-title" id="exampleModalCenterTitle">添加设备</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -54,22 +57,31 @@
             @using (Html.BeginForm("addDevice", "ManageDevice", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
-                <div class="modal-body">
+            <div class="modal-body">
 
-                    <div class="form-group">
-                        <label for="formGroupExampleInput">设备名称</label>
-                        <input type="text" class="form-control" id="Name" name="Name" placeholder="设备名称">
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput">IP地址</label>
-                        <input type="text" class="form-control" id="IP" name="IP"  placeholder="IP地址">
-                    </div>
-                    <div class="form-group">
-                        <label for="formGroupExampleInput">账号</label>
-                        <input type="text" class="form-control" id="Account" name="Account" placeholder="账号">
-                    </div>
-
+                <div class="form-group">
+                    <label for="formGroupExampleInput">设备名称</label>
+                    <input type="text" class="form-control" id="Name" name="Name" placeholder="设备名称">
                 </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">类型</label>
+                    @Html.DropDownList("Type",
+                    new SelectList(Enum.GetValues(typeof(DeviceType))),
+                    "选择设备类型",
+                    new { @class = "form-control" })
+                    @*<input type="text" class="form-control" id="Type" name="Type" placeholder="设备名称">*@
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">IP地址</label>
+                    <input type="text" class="form-control" id="IP" name="IP" placeholder="IP地址">
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">账号</label>
+                    @Html.DropDownList("UserId", Model.AccountItems,"选择账号", new { @class = "form-control" })
+                    @*<input type="text" class="form-control" id="Account" name="Account" placeholder="账号">*@
+                </div>
+
+            </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                     <button type="submit" class="btn btn-primary">确定</button>

@@ -13,6 +13,7 @@ namespace YinXiang.Models
     public class ApplicationUser : IdentityUser
     {
         public DateTime CreateTime { get; set; } = DateTime.Now;
+        public string BindingIp { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -27,6 +28,7 @@ namespace YinXiang.Models
     {
         public IDbSet<BatchInfo> BatchInfos { get; set; }
         public IDbSet<DeviceInfo> DeviceInfos { get; set; }
+        public IDbSet<DeviceAccount> DeviceAccounts { get; set; }
         public IDbSet<ProductionInfo> ProductionInfos { get; set; }
         public IDbSet<SendBatchDeviceHistory> SendBatchDeviceHistories { get; set; }
         public IDbSet<UpdateBatchStockHistory> UpdateBatchStockHistories { get; set; }
