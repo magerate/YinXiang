@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace YinXiang.Models
@@ -25,6 +23,7 @@ namespace YinXiang.Models
         public DeviceType Type { get; set; }
         public string JobFieldName { get; set; }
         public string IP { get; set; }
+        public int Port { get; set; }
         //public string Account { get; set; }
         public DateTime CreateTime { get; set; } = DateTime.Now;
     }
@@ -41,14 +40,13 @@ namespace YinXiang.Models
         public ApplicationUser User { get;set; }
     }
 
-    
-
     public class CreateDeviceViewModel
     {
         public string Name { get; set; }
         public DeviceType Type { get; set; }
         public string JobFieldName { get; set; }
         public string IP { get; set; }
+        public int Port { get; set; }
         public string UserId { get; set; }
     }
 }

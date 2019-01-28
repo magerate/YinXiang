@@ -35,17 +35,6 @@
                                 grid.Column("Device.IP", header: "ip地址"),
                                 grid.Column("User.UserName", header: "绑定账号"),
                                 grid.Column("Device.CreateTime", header: "添加日期", format:  @<text>@item.Device.CreateTime.ToString("d")</text>)
-                                //grid.Column(format: (item) => {
-                                //    MvcForm form = null;
-                                //    using (form = Html.BeginForm("deleteDevice", "ManageDevice", new { id = item.Device.Id }, FormMethod.Post))
-                                //    {
-                                //            <a class="btn" href="javascript:document.getElementById('logoutForm').submit()">确定</a>
-                                //    }
-                                //    return form;
-                                //}
-
-                             //)
-
                              ),
                          tableStyle: "table table-bordered")
             </div>
@@ -85,8 +74,16 @@
                     <input type="text" class="form-control" id="IP" name="IP" placeholder="IP地址">
                 </div>
                 <div class="form-group">
+                    <label for="formGroupExampleInput">端口</label>
+                    <input type="text" class="form-control" id="Port" name="Port" placeholder="端口">
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">作业键值</label>
+                    <input type="text" class="form-control" id="JobFieldName" name="JobFieldName" placeholder="作业键值">
+                </div>
+                <div class="form-group">
                     <label for="formGroupExampleInput">账号</label>
-                    @Html.DropDownList("UserId", Model.AccountItems,"选择账号", new { @class = "form-control" })
+                    @Html.DropDownList("UserId", Model.AccountItems, "选择账号", new { @class = "form-control" })
                     @*<input type="text" class="form-control" id="Account" name="Account" placeholder="账号">*@
                 </div>
 

@@ -38,7 +38,6 @@ namespace YinXiang.Controllers
             var daIds = ApplicationContext.DeviceAccounts.Select(da => da.UserId);
             var users = UserManager.Users
                                 .Where(u => !daIds.Contains(u.Id));
-                                //.ToArray();
             var userSelectItems = users.Select(u => new SelectListItem()
             {
                 Text = u.UserName,
@@ -81,6 +80,7 @@ namespace YinXiang.Controllers
                 Type = device.Type,
                 IP = device.IP,
                 JobFieldName = device.JobFieldName,
+                Port = device.Port,
             };
 
 

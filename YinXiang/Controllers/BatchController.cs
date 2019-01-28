@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
+using System.Threading.Tasks;
+
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.AspNet.Identity.Owin;
 
 using YinXiang.Models;
 using RestSharp;
 using YinXiang.Models.Dtos;
-using System.Data.Entity;
+
 
 namespace YinXiang.Controllers
 {
@@ -22,6 +26,14 @@ namespace YinXiang.Controllers
                 return HttpContext.GetOwinContext().Get<ApplicationDbContext>();
             }
 
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return  HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
         }
 
         // GET: Batch
@@ -119,12 +131,58 @@ namespace YinXiang.Controllers
         }
 
         [HttpPost]
-        public ActionResult SendBatchNoes(SendBatchDto sendBatchDto)
+        public async Task<ActionResult> SendBatchNoes(SendBatchDto sendBatchDto)
         {
             SendBatchDeviceHistory sendBatchDeviceHistory = ApplicationContext.SendBatchDeviceHistories.Where(m => m.BatchNo == sendBatchDto.BatchNo).FirstOrDefault();
             if (sendBatchDeviceHistory != null)
                 return Content("此批次码不能重复发送！");
-            sendBatchDeviceHistory = new SendBatchDeviceHistory();
+
+            var device = ApplicationContext.GetDeviceByUserId(User.Identity.GetUserId());
+            if(null == device)
+            {
+                return Content("该账号还未绑定打码设备");
+            }
+
+            if(device.Type == DeviceType.X30)
+            {
+                try
+                {
+                    var client = new X30Client();
+                    await client.ConnectAsync(device.IP);
+                    var jobCommand = JobCommand.CreateJobUpdate();
+                    jobCommand.Fields.Add(device.JobFieldName, sendBatchDto.BatchNo);
+                    await client.UpdateJob(jobCommand);
+                    client.TcpClient.Close();
+                    return SendSucess(sendBatchDto);
+                }
+                catch (Exception e)
+                {
+                    return Content($"发送失败--{e.Message}");
+                }
+            }else if(device.Type == DeviceType.iMark)
+            {
+                try
+                {
+                    var client = new iMarkClient();
+                    await client.TcpClient.ConnectAsync(device.IP,device.Port);
+                    await client.SendAsync(sendBatchDto.BatchNo);
+                    client.TcpClient.Close();
+                    return SendSucess(sendBatchDto);
+                }
+                catch (Exception e)
+                {
+                    return Content($"发送失败--{e.Message}");
+                }
+            }
+            else
+            {
+                return Content($"设备类型配置错误 {device.Name} {device.Type}");
+            }
+        }
+
+        private ContentResult SendSucess(SendBatchDto sendBatchDto)
+        {
+            var sendBatchDeviceHistory = new SendBatchDeviceHistory();
             sendBatchDeviceHistory.BatchNo = sendBatchDto.BatchNo;
             sendBatchDeviceHistory.DeviceName = sendBatchDto.DeviceName;
             sendBatchDeviceHistory.IP = sendBatchDto.IP;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -42,7 +43,19 @@ namespace YinXiang.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DeviceInfo GetDeviceByUserId(string userId)
+        {
+            var da = DeviceAccounts.FirstOrDefault(d => d.UserId == userId);
+            if(null == da)
+            {
+                return null;
+            }
+
+            return DeviceInfos.FirstOrDefault(d => d.Id == da.Id);
+        }
     }
+
 
     public class Seeder: CreateDatabaseIfNotExists<ApplicationDbContext>
     {
