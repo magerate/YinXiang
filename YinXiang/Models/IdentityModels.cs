@@ -13,6 +13,7 @@ namespace YinXiang.Models
     public class ApplicationUser : IdentityUser
     {
         public DateTime CreateTime { get; set; } = DateTime.Now;
+        public string BindingIp { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {

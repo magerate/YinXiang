@@ -42,6 +42,7 @@ namespace YinXiang.Controllers
         {
             var user = new ApplicationUser();
             user.UserName = model.UserName;
+            user.BindingIp = model.BindingIp;
 
             var result = UserManager.Create(user, model.Password);
             return Redirect("index");

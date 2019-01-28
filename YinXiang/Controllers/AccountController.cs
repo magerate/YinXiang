@@ -73,6 +73,14 @@ namespace YinXiang.Controllers
                 return View(model);
             }
 
+            var user = await UserManager.FindByNameAsync(model.UserName);
+            var role = await UserManager.GetRolesAsync(user.Id);
+            if (!role.Contains("Admin") && Request.UserHostAddress != user.BindingIp)
+            {
+                ModelState.AddModelError("", $"只能从IP地址为{user.BindingIp}的机子登陆");
+                return View(model);
+            }
+
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
@@ -80,6 +88,8 @@ namespace YinXiang.Controllers
             {
                 case SignInStatus.Success:
                     return RedirectToLocal(returnUrl);
+                    
+                    
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
