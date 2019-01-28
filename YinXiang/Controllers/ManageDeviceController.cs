@@ -27,7 +27,6 @@ namespace YinXiang.Controllers
             {
                 return HttpContext.GetOwinContext().Get<ApplicationDbContext>();
             }
-
         }
 
         // GET: ManageDevice
@@ -63,6 +62,13 @@ namespace YinXiang.Controllers
             var user = UserManager.FindById(userId);
             deviceDto.User = user;
             return deviceDto;
+        }
+
+
+        [HttpPost]
+        public ActionResult DeleteDevice(int id)
+        {
+            return Redirect("index");
         }
 
         [HttpPost]
