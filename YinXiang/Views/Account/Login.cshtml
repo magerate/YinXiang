@@ -15,13 +15,14 @@
         @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
         {
             @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">
                 <div class="form-label-group">
                     @*@Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-        </div>*@
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>*@
                     @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
                     @*<input class="form-control" data-val="true" data-val-required="用户名字段是必需的。" id="UserName" name="UserName" type="text" value="" />*@

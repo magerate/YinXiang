@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace YinXiang.Models
     public class ApplicationUser : IdentityUser
     {
         public DateTime CreateTime { get; set; } = DateTime.Now;
+        public string BindingIp { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
@@ -27,6 +29,7 @@ namespace YinXiang.Models
     {
         public IDbSet<BatchInfo> BatchInfos { get; set; }
         public IDbSet<DeviceInfo> DeviceInfos { get; set; }
+        public IDbSet<DeviceAccount> DeviceAccounts { get; set; }
         public IDbSet<ProductionInfo> ProductionInfos { get; set; }
         public IDbSet<SendBatchDeviceHistory> SendBatchDeviceHistories { get; set; }
         public IDbSet<UpdateBatchStockHistory> UpdateBatchStockHistories { get; set; }
@@ -40,7 +43,19 @@ namespace YinXiang.Models
         {
             return new ApplicationDbContext();
         }
+
+        public DeviceInfo GetDeviceByUserId(string userId)
+        {
+            var da = DeviceAccounts.FirstOrDefault(d => d.UserId == userId);
+            if(null == da)
+            {
+                return null;
+            }
+
+            return DeviceInfos.FirstOrDefault(d => d.Id == da.Id);
+        }
     }
+
 
     public class Seeder: CreateDatabaseIfNotExists<ApplicationDbContext>
     {
