@@ -6,7 +6,11 @@
 }
 
 <div class="card card-login mx-auto mt-5">
-    <div class="card-header">登陆</div>
+    <div class="card-header">
+        <div style="margin: 0;text-align: center; padding: 0 10px 0px 10px;font-size: 22px;">
+        <img src="~/Content/images/YingXiang.png" style="width:70%;"/>
+        </div>
+    </div>
     <div class="card-body">
         @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
         {
