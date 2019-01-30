@@ -58,7 +58,7 @@ namespace YinXiang.Controllers
             var deviceDto = new DeviceDto();
             deviceDto.Device = deviceInfo;
 
-            var userId = ApplicationContext.DeviceAccounts.FirstOrDefault(da => da.Id == deviceInfo.Id).UserId;
+            var userId = ApplicationContext.DeviceAccounts.FirstOrDefault(da => da.DeviceId == deviceInfo.Id).UserId;
             var user = UserManager.FindById(userId);
             deviceDto.User = user;
             return deviceDto;
@@ -68,7 +68,31 @@ namespace YinXiang.Controllers
         [HttpPost]
         public ActionResult DeleteDevice(int id)
         {
-            return Redirect("index");
+            using (var transaction = ApplicationContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    var deviceInfo = ApplicationContext.DeviceInfos.Where(m => m.Id == id).FirstOrDefault();
+                    if (deviceInfo != null)
+                    {
+                        ApplicationContext.DeviceInfos.Remove(deviceInfo);
+                        ApplicationContext.SaveChanges();
+                    }
+                    var deviceAccount = ApplicationContext.DeviceAccounts.Where(m => m.DeviceId == id).FirstOrDefault();
+                    if (deviceAccount != null)
+                    {
+                        ApplicationContext.DeviceAccounts.Remove(deviceAccount);
+                        ApplicationContext.SaveChanges();
+                    }
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return HttpNotFound(ex.Message);
+                }
+            }
+            return Content("删除成功");
         }
 
         [HttpPost]
@@ -83,8 +107,7 @@ namespace YinXiang.Controllers
                 JobFieldName = device.JobFieldName,
                 Port = device.Port,
             };
-
-
+            
             using (var transaction = ApplicationContext.Database.BeginTransaction())
             {
                 try
@@ -94,21 +117,19 @@ namespace YinXiang.Controllers
 
                     var da = new DeviceAccount()
                     {
-                        Id = deviceInfo.Id,
+                        DeviceId = deviceInfo.Id,
                         UserId = device.UserId,
                     };
                     ApplicationContext.DeviceAccounts.Add(da);
                     ApplicationContext.SaveChanges();
                     transaction.Commit();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     transaction.Rollback();
                 }
             }
 
-
-           
             return Redirect("index");
         }
 
@@ -121,7 +142,7 @@ namespace YinXiang.Controllers
             }
             DeviceInfoDto deviceInfoDto = new DeviceInfoDto();
             TypeHelp.ObjCopy(deviceInfo, deviceInfoDto);
-            var deviceAccount = ApplicationContext.DeviceAccounts.Where(m => m.Id == id).FirstOrDefault();
+            var deviceAccount = ApplicationContext.DeviceAccounts.Where(m => m.DeviceId == id).FirstOrDefault();
             if (deviceAccount != null)
             {
                 deviceInfoDto.UserId = deviceAccount.UserId;
@@ -161,7 +182,7 @@ namespace YinXiang.Controllers
                     ApplicationContext.Entry<DeviceInfo>(deviceInfo).State = EntityState.Modified;
                     ApplicationContext.SaveChanges();
 
-                    var deviceAccount = ApplicationContext.DeviceAccounts.Where(m => m.Id == device.Id).FirstOrDefault();
+                    var deviceAccount = ApplicationContext.DeviceAccounts.Where(m => m.DeviceId == device.Id).FirstOrDefault();
                     if (deviceInfo != null)
                     {
                         deviceAccount.UserId = device.UserId;

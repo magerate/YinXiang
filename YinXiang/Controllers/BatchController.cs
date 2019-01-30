@@ -235,12 +235,19 @@ namespace YinXiang.Controllers
         [HttpPost] 
         public ActionResult UploadPrintInfo(UploadPrintDto uploadPrintDto)
         {
-            var entity = new PrintBatchHistory();
-            entity.BatchNo = uploadPrintDto.BatchNo;
-            entity.IP = uploadPrintDto.IP;
-            ApplicationContext.PrintBatchHistories.Add(entity);
-            ApplicationContext.SaveChanges();
-            return Content("上传成功");
+            try
+            {
+                var entity = new PrintBatchHistory();
+                entity.BatchNo = uploadPrintDto.BatchNo;
+                entity.IP = uploadPrintDto.IP;
+                ApplicationContext.PrintBatchHistories.Add(entity);
+                ApplicationContext.SaveChanges();
+                return Content("上传成功");
+            }
+            catch (Exception ex)
+            {
+                return HttpNotFound(ex.Message);
+            }
         }
     }
 }

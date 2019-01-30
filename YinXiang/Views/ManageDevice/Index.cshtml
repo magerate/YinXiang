@@ -35,7 +35,7 @@
                                 grid.Column("Device.IP", header: "ip地址"),
                                 grid.Column("User.UserName", header: "绑定账号"),
                                 grid.Column("Device.CreateTime", header: "添加日期", format:  @<text>@item.Device.CreateTime.ToString("d")</text>),
-                          grid.Column(format: (item) => (Html.Raw("<a class='btn' href='javascript:void(0);'onclick='openEditDevice(" + item.Device.Id + ")'>编辑</a>")))
+                                grid.Column(format: (item) => (Html.Raw("<a class='btn' href='javascript:void(0);'onclick='openEditDevice(" + item.Device.Id + ")'>编辑</a><a class='btn' href='javascript:void(0);'onclick='deleteDevice(" + item.Device.Id + ")'>删除</a>")))
                     ),
              tableStyle: "table table-bordered")
             </div>
@@ -107,6 +107,15 @@
             $('#EditDeviceInfoDiv').modal('hide');
             location.href = location.href;
         }, 'frmEditDeviceInfo')
+    }
+    function deleteDevice(id) {
+        Post('/ManageDevice/DeleteDevice?id=' + id, function (result) {
+            if (result == '删除成功') {
+                location.href = location.href;
+                return;
+            }
+            alert(result);
+        });
     }
 </script>
 

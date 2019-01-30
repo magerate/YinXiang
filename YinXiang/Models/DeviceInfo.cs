@@ -30,7 +30,8 @@ namespace YinXiang.Models
 
     public class DeviceAccount
     {
-        public int Id { get; set; }
+        public int Id { get; set; }        
+        public int DeviceId { get; set; }
         public string UserId { get; set; }
     }
 
