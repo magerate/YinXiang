@@ -64,7 +64,6 @@ namespace YinXiang.Controllers
             return deviceDto;
         }
 
-
         [HttpPost]
         public ActionResult DeleteDevice(int id)
         {
@@ -124,7 +123,7 @@ namespace YinXiang.Controllers
                     ApplicationContext.SaveChanges();
                     transaction.Commit();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     transaction.Rollback();
                 }
