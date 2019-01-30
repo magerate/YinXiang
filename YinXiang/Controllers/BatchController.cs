@@ -235,6 +235,11 @@ namespace YinXiang.Controllers
         [HttpPost] 
         public ActionResult UploadPrintInfo(UploadPrintDto uploadPrintDto)
         {
+            if (uploadPrintDto == null || string.IsNullOrEmpty(uploadPrintDto.BatchNo) 
+                || string.IsNullOrEmpty(uploadPrintDto.IP))
+            {
+                return Content("BatchNo和IP都不能为空");
+            }
             try
             {
                 var entity = new PrintBatchHistory();
@@ -246,7 +251,7 @@ namespace YinXiang.Controllers
             }
             catch (Exception ex)
             {
-                return HttpNotFound(ex.Message);
+                return Content($"上传失败--{ex.Message}");
             }
         }
     }

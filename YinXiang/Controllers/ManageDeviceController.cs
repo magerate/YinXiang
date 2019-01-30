@@ -88,7 +88,7 @@ namespace YinXiang.Controllers
                 catch (Exception ex)
                 {
                     transaction.Rollback();
-                    return HttpNotFound(ex.Message);
+                    return Content($"删除失败--{ex.Message}");
                 }
             }
             return Content("删除成功");
