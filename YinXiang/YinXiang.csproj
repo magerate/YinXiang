@@ -446,6 +446,7 @@
     <Content Include="Views\SendBatchDeviceHistory\List.cshtml" />
     <Content Include="Views\UpdateBatchStockHistory\Index.cshtml" />
     <Content Include="Views\UpdateBatchStockHistory\List.cshtml" />
+    <Content Include="Views\ManageDevice\EditDeviceInto.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

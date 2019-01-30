@@ -49,4 +49,17 @@ namespace YinXiang.Models
         public int Port { get; set; }
         public string UserId { get; set; }
     }
+
+    public class DeviceInfoDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DeviceType Type { get; set; }
+        public string JobFieldName { get; set; }
+        public string IP { get; set; }
+        public int Port { get; set; }
+        public string UserId { get; set; }
+        public IEnumerable<SelectListItem> DeviceTypeItems { get; set; }
+        public IEnumerable<SelectListItem> AccountItems { get; set; }
+    }
 }

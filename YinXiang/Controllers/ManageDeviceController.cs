@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -108,6 +109,73 @@ namespace YinXiang.Controllers
 
 
            
+            return Redirect("index");
+        }
+
+        public ActionResult EditDeviceInto(int id)
+        {
+            var deviceInfo = ApplicationContext.DeviceInfos.Where(m => m.Id == id).FirstOrDefault();
+            if (deviceInfo == null)
+            {
+                deviceInfo = new DeviceInfo();
+            }
+            DeviceInfoDto deviceInfoDto = new DeviceInfoDto();
+            TypeHelp.ObjCopy(deviceInfo, deviceInfoDto);
+            var deviceAccount = ApplicationContext.DeviceAccounts.Where(m => m.Id == id).FirstOrDefault();
+            if (deviceAccount != null)
+            {
+                deviceInfoDto.UserId = deviceAccount.UserId;
+            }
+            var users = UserManager.Users;
+            var userSelectItems = users.Select(u => new SelectListItem()
+            {
+                Text = u.UserName,
+                Value = u.Id,
+                Selected = deviceInfoDto.UserId == u.Id,
+            });
+            deviceInfoDto.AccountItems = userSelectItems;
+            IList<SelectListItem> deviceTypeItems = new List<SelectListItem>();
+            foreach (int i in Enum.GetValues(typeof(DeviceType)))
+            {
+                deviceTypeItems.Add(new SelectListItem()
+                {
+                    Text = Enum.GetName(typeof(DeviceType), i),
+                    Value = i + "",
+                    Selected = (int)deviceInfoDto.Type == i,
+                });
+            }
+            deviceInfoDto.DeviceTypeItems = deviceTypeItems.AsEnumerable();
+            return View(deviceInfoDto);
+        }
+
+        [HttpPost]
+        public ActionResult EditDevice(DeviceInfoDto device)
+        {
+            var deviceInfo = new DeviceInfo();
+            TypeHelp.ObjCopy(device, deviceInfo);
+
+            using (var transaction = ApplicationContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    ApplicationContext.Entry<DeviceInfo>(deviceInfo).State = EntityState.Modified;
+                    ApplicationContext.SaveChanges();
+
+                    var deviceAccount = ApplicationContext.DeviceAccounts.Where(m => m.Id == device.Id).FirstOrDefault();
+                    if (deviceInfo != null)
+                    {
+                        deviceAccount.UserId = device.UserId;
+                        ApplicationContext.Entry<DeviceAccount>(deviceAccount).State = EntityState.Modified;
+                        ApplicationContext.SaveChanges();
+                    };
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
+
             return Redirect("index");
         }
     }

@@ -1,0 +1,48 @@
+﻿@{
+    Layout = null;
+}
+@using YinXiang.Models
+@model DeviceInfoDto
+
+
+    @Html.AntiForgeryToken()
+    <div class="modal-body">
+        <form id="frmEditDeviceInfo">
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <div class="form-group">
+                <label for="formGroupExampleInput">设备名称</label>
+                <input type="text" class="form-control" id="Name" name="Name" placeholder="设备名称" value="@Model.Name">
+            </div>
+            <div class="form-group">
+                <label for="formGroupExampleInput">类型</label>
+                @Html.DropDownList("Type",
+                new SelectList(Enum.GetValues(typeof(DeviceType))),
+                "选择设备类型",
+                new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label for="formGroupExampleInput">IP地址</label>
+                <input type="text" class="form-control" id="IP" name="IP" placeholder="IP地址" value="@Model.IP">
+            </div>
+            <div class="form-group">
+                <label for="formGroupExampleInput">端口</label>
+                <input type="text" class="form-control" id="Port" name="Port" placeholder="端口" value="@Model.Port">
+            </div>
+            <div class="form-group">
+                <label for="formGroupExampleInput">作业键值</label>
+                <input type="text" class="form-control" id="JobFieldName" name="JobFieldName" placeholder="作业键值" value="@Model.JobFieldName">
+            </div>
+            <div class="form-group">
+                <label for="formGroupExampleInput">账号</label>
+                @Html.DropDownList("UserId", Model.AccountItems, "选择账号", new { @class = "form-control" })
+                @*<input type="text" class="form-control" id="Account" name="Account" placeholder="账号">*@
+            </div>
+        </form>
+    </div>
+    <div id="EditDeviceInfoButtons" class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" >取消</button>
+        <button type="submit" class="btn btn-primary" onclick="saveDeviceInfo()">确定</button>
+    </div>
+
+
+

@@ -78,4 +78,10 @@ namespace YinXiang.Models.Dtos
         public int TotalNumber { get; set; }
         public DateTime CreateTime { get; set; } = DateTime.Now;
     }
+
+    public class UploadPrintDto
+    {
+        public string BatchNo { get; set; }
+        public string IP { get; set; }
+    }
 }

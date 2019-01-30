@@ -15,7 +15,8 @@
              grid.Column("DeviceName", header: "设备名称"),
              grid.Column("IP", header: "ip地址"),
              grid.Column("Account", header: "绑定账号"),
-             grid.Column("CreateTime", header: "时间", format: @<text>@(item.CreateTime.ToString("yyyy-MM-dd HH:dd:ss"))</text>)
+             grid.Column("CreateTime", header: "时间", format: @<text>@(item.CreateTime.ToString("yyyy-MM-dd HH:dd:ss"))</text>),
+             grid.Column(format: (item) => Html.Raw("<a class='btn' href='javascript:void(0);' data-toggle='modal' data-target='#updateBatchStockModal' data-whatever='" + item.BatchNo + "'>入库</a>"))
              ),
                               tableStyle: "table table-bordered"
                               )

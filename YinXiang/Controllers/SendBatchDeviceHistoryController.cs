@@ -6,6 +6,8 @@ using System.Web;
 using System.Web.Mvc;
 using YinXiang.Models;
 using YinXiang.Models.Dtos;
+using RestSharp;
+using System.Data.Entity;
 
 namespace YinXiang.Controllers
 {
@@ -85,6 +87,46 @@ namespace YinXiang.Controllers
                 Model.Add(entity);
             }
             return View(Model);
+        }
+
+        [HttpPost]
+        public ActionResult UpdateBatchStock(SendBatchStockDto entity)
+        {
+            var batchItem = ApplicationContext.BatchInfos.Where(m => m.BatchNo == entity.batchNo).FirstOrDefault();
+            if (batchItem == null)
+            {
+                return Content("此批次码不存在");
+            }
+            var client = new RestClient("http://x97700.iok.la:32611/ycProductionController.do?inByBatchNo");
+            var request = new RestRequest(Method.POST);
+            request.AddParameter("multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
+                "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"batchNo\"\r\n\r\n"
+                + batchItem.RetrospectNo
+                + "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"totalNum\"\r\n\r\n"
+                + entity.totalNumber + "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--", ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK || string.IsNullOrEmpty(response.Content))
+            {
+                return Content(response.Content);
+            }
+            var content = response.Content;
+            BatchResultDto batchResultDto = JsonHelp.ToObj<BatchResultDto>(response.Content);
+            if (!batchResultDto.success)
+            {
+                return Content(response.Content);
+            }
+            UpdateBatchStockHistory updateBatchStockHistory = new UpdateBatchStockHistory();
+            updateBatchStockHistory.BatchNo = batchItem.BatchNo;
+            updateBatchStockHistory.TotalNumber = entity.totalNumber;
+            ApplicationContext.UpdateBatchStockHistories.Add(updateBatchStockHistory);
+            ApplicationContext.SaveChanges();
+            if (batchItem != null)
+            {
+                batchItem.Quantity = entity.totalNumber;
+                ApplicationContext.Entry<BatchInfo>(batchItem).State = EntityState.Modified;
+                ApplicationContext.SaveChanges();
+            }
+            return Content(response.Content);
         }
     }
 }

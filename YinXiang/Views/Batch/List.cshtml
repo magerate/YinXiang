@@ -13,8 +13,7 @@
              grid.Column("sku", header: "产品规格"),
              grid.Column("batchDate", header: "日期", format: @<text>@item.batchDate.ToString("yyyy-MM-dd")</text>),
              grid.Column("createDate", header: "创建时间", format: @<text>@(item.createDate!=null?item.createDate.ToString("yyyy-MM-dd HH:dd:ss"):"")</text>),
-             grid.Column(format: (item) => (item.IsSent? "已发送" : Html.Raw("<a id='btn_"+ item.batchNo + "' class='btn' href='javascript:void(0);'onclick='sendBatchNoToDevice(\"" + item.batchNo + "\")'>发送</a>"))),
-             grid.Column(format: (item) => Html.Raw("<a class='btn' href='javascript:void(0);' data-toggle='modal' data-target='#updateBatchStockModal' data-whatever='" + item.batchNo + "'>入库</a>"))
+             grid.Column(format: (item) => (item.IsSent? "已发送" : Html.Raw("<a id='btn_"+ item.batchNo + "' class='btn' href='javascript:void(0);'onclick='sendBatchNoToDevice(\"" + item.batchNo + "\")'>发送</a>")))
              ),
                tableStyle: "table table-bordered"
                )

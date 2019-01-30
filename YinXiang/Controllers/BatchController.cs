@@ -231,5 +231,16 @@ namespace YinXiang.Controllers
             }
             return Content(response.Content);
         }
+
+        [HttpPost] 
+        public ActionResult UploadPrintInfo(UploadPrintDto uploadPrintDto)
+        {
+            var entity = new PrintBatchHistory();
+            entity.BatchNo = uploadPrintDto.BatchNo;
+            entity.IP = uploadPrintDto.IP;
+            ApplicationContext.PrintBatchHistories.Add(entity);
+            ApplicationContext.SaveChanges();
+            return Content("上传成功");
+        }
     }
 }
