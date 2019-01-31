@@ -84,6 +84,7 @@ namespace YinXiang.Controllers
                     TypeHelp.ObjCopy(batchItem, entity);
                 }
                 TypeHelp.ObjCopy(item, entity);
+                entity.ScannedCounts = ApplicationContext.PrintBatchHistories.Where(m => m.BatchNo == entity.BatchNo).Count();
                 Model.Add(entity);
             }
             return View(Model);

@@ -67,6 +67,7 @@ namespace YinXiang.Models.Dtos
         public string IP { get; set; }
         public string Account { get; set; }
         public DateTime CreateTime { get; set; } = DateTime.Now;
+        public int ScannedCounts { get; set; }
     }
     public class UpdateBatchStockHistoryDto
     {

@@ -48,7 +48,7 @@
                     <label for="formGroupExampleInput">入库数量</label>
                 </div>
                 <div class="input-group">
-                    <input type="text" class="form-control bfh-number" data-min="5" data-max="25" id="TotalNumber" name="totalNumber" placeholder="入库数量" onkeypress="return isNumber(event)" required>
+                    <input type="text" class="form-control bfh-number" data-min="5" data-max="25" id="TotalNumber" name="totalNumber" placeholder="入库数量" readonly>
                     <div class="invalid-feedback">
                         只能输入数字
                     </div>
@@ -67,9 +67,10 @@
         loadSendBatchDeviceHistoryData();
         $('#updateBatchStockModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
-            var batchNo = button.data('whatever');
+            var objData = button.data('whatever');
             var modal = $(this);
-            modal.find('#EditBatchNo').val(batchNo);
+            modal.find('#EditBatchNo').val(objData.BatchNo);
+            modal.find('#TotalNumber').val(objData.ScannedCounts);
         })
     });
     function loadSendBatchDeviceHistoryData() {
@@ -95,7 +96,7 @@
     function saveStockNumber() {
         var batchNo = $('#EditBatchNo').val();
         var totalNumber = $('#TotalNumber').val();
-        $.post('/Batch/UpdateBatchStock', { batchNo: batchNo, totalNumber: totalNumber },
+        $.post('/SendBatchDeviceHistory/UpdateBatchStock', { batchNo: batchNo, totalNumber: totalNumber },
             function (result) {
                 var objJson = eval('(' + result + ')');
                 if (objJson.success) {
