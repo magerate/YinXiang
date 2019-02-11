@@ -32,7 +32,7 @@ namespace YinXiang.Controllers
         {
             get
             {
-                return  HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                return HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             }
         }
 
@@ -53,7 +53,12 @@ namespace YinXiang.Controllers
                 search.batchDate = DateTime.Now;
             DateTime startBatchDate = search.batchDate.Value.Date;
             DateTime endBatchDate = startBatchDate.AddDays(1).AddSeconds(-1);
-            var client = new RestClient("http://x97700.iok.la:32611/ycProductionController.do?getListByBatchDate&batchDate=" + startBatchDate.ToString("yyyy-MM-dd"));
+            ApiSetting apiSetting = ApplicationContext.ApiSettings.FirstOrDefault() ?? new ApiSetting();
+            if (apiSetting.Id == 0)
+            {
+                apiSetting.ApiUrl = "http://x97700.iok.la:32611/ycProductionController.do";
+            }
+            var client = new RestClient(apiSetting.ApiUrl + "?getListByBatchDate&batchDate=" + startBatchDate.ToString("yyyy-MM-dd"));
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             if (response.StatusCode != System.Net.HttpStatusCode.OK || string.IsNullOrEmpty(response.Content))
@@ -138,12 +143,12 @@ namespace YinXiang.Controllers
                 return Content("此批次码不能重复发送！");
 
             var device = ApplicationContext.GetDeviceByUserId(User.Identity.GetUserId());
-            if(null == device)
+            if (null == device)
             {
                 return Content("该账号还未绑定打码设备");
             }
 
-            if(device.Type == DeviceType.X30)
+            if (device.Type == DeviceType.X30)
             {
                 try
                 {
@@ -159,12 +164,13 @@ namespace YinXiang.Controllers
                 {
                     return Content($"发送失败--{e.Message}");
                 }
-            }else if(device.Type == DeviceType.iMark)
+            }
+            else if (device.Type == DeviceType.iMark)
             {
                 try
                 {
                     var client = new iMarkClient();
-                    await client.TcpClient.ConnectAsync(device.IP,device.Port);
+                    await client.TcpClient.ConnectAsync(device.IP, device.Port);
                     await client.SendAsync(sendBatchDto.BatchNo);
                     client.TcpClient.Close();
                     return SendSucess(sendBatchDto);
@@ -192,10 +198,10 @@ namespace YinXiang.Controllers
             return Content("发送成功");
         }
 
-        [HttpPost] 
+        [HttpPost]
         public ActionResult UploadPrintInfo(UploadPrintDto uploadPrintDto)
         {
-            if (uploadPrintDto == null || string.IsNullOrEmpty(uploadPrintDto.BatchNo) 
+            if (uploadPrintDto == null || string.IsNullOrEmpty(uploadPrintDto.BatchNo)
                 || string.IsNullOrEmpty(uploadPrintDto.IP))
             {
                 return Content("BatchNo和IP都不能为空");

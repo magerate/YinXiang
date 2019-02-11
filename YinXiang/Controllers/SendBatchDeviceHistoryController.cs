@@ -98,7 +98,12 @@ namespace YinXiang.Controllers
             {
                 return Content("此批次码不存在");
             }
-            var client = new RestClient("http://x97700.iok.la:32611/ycProductionController.do?inByBatchNo");
+            ApiSetting apiSetting = ApplicationContext.ApiSettings.FirstOrDefault() ?? new ApiSetting();
+            if (apiSetting.Id == 0)
+            {
+                apiSetting.ApiUrl = "http://x97700.iok.la:32611/ycProductionController.do";
+            }
+            var client = new RestClient(apiSetting.ApiUrl + "?inByBatchNo");
             var request = new RestRequest(Method.POST);
             request.AddParameter("multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
                 "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"batchNo\"\r\n\r\n"
