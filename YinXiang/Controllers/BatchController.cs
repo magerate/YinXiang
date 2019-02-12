@@ -32,7 +32,7 @@ namespace YinXiang.Controllers
         {
             get
             {
-                return  HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                return HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
             }
         }
 
@@ -53,7 +53,12 @@ namespace YinXiang.Controllers
                 search.batchDate = DateTime.Now;
             DateTime startBatchDate = search.batchDate.Value.Date;
             DateTime endBatchDate = startBatchDate.AddDays(1).AddSeconds(-1);
-            var client = new RestClient("http://x97700.iok.la:32611/ycProductionController.do?getListByBatchDate&batchDate=" + startBatchDate.ToString("yyyy-MM-dd"));
+            ApiSetting apiSetting = ApplicationContext.ApiSettings.FirstOrDefault() ?? new ApiSetting();
+            if (apiSetting.Id == 0)
+            {
+                apiSetting.ApiUrl = "http://x97700.iok.la:32611/ycProductionController.do";
+            }
+            var client = new RestClient(apiSetting.ApiUrl + "?getListByBatchDate&batchDate=" + startBatchDate.ToString("yyyy-MM-dd"));
             var request = new RestRequest(Method.GET);
             IRestResponse response = client.Execute(request);
             if (response.StatusCode != System.Net.HttpStatusCode.OK || string.IsNullOrEmpty(response.Content))
@@ -138,12 +143,12 @@ namespace YinXiang.Controllers
                 return Content("此批次码不能重复发送！");
 
             var device = ApplicationContext.GetDeviceByUserId(User.Identity.GetUserId());
-            if(null == device)
+            if (null == device)
             {
                 return Content("该账号还未绑定打码设备");
             }
 
-            if(device.Type == DeviceType.X30)
+            if (device.Type == DeviceType.X30)
             {
                 try
                 {
@@ -159,12 +164,13 @@ namespace YinXiang.Controllers
                 {
                     return Content($"发送失败--{e.Message}");
                 }
-            }else if(device.Type == DeviceType.iMark)
+            }
+            else if (device.Type == DeviceType.iMark)
             {
                 try
                 {
                     var client = new iMarkClient();
-                    await client.TcpClient.ConnectAsync(device.IP,device.Port);
+                    await client.TcpClient.ConnectAsync(device.IP, device.Port);
                     await client.SendAsync(sendBatchDto.BatchNo);
                     client.TcpClient.Close();
                     return SendSucess(sendBatchDto);
@@ -193,43 +199,26 @@ namespace YinXiang.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateBatchStock(SendBatchStockDto entity)
+        public ActionResult UploadPrintInfo(UploadPrintDto uploadPrintDto)
         {
-            var batchItem = ApplicationContext.BatchInfos.Where(m => m.BatchNo == entity.batchNo).FirstOrDefault();
-            if (batchItem == null)
+            if (uploadPrintDto == null || string.IsNullOrEmpty(uploadPrintDto.BatchNo)
+                || string.IsNullOrEmpty(uploadPrintDto.IP))
             {
-                return Content("此批次码不存在");
+                return Content("BatchNo和IP都不能为空");
             }
-            var client = new RestClient("http://x97700.iok.la:32611/ycProductionController.do?inByBatchNo");
-            var request = new RestRequest(Method.POST);
-            request.AddParameter("multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-                "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"batchNo\"\r\n\r\n" 
-                + batchItem.RetrospectNo
-                + "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"totalNum\"\r\n\r\n" 
-                + entity.totalNumber + "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--", ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
-            if (response.StatusCode != System.Net.HttpStatusCode.OK || string.IsNullOrEmpty(response.Content))
+            try
             {
-                return Content(response.Content);
-            }
-            var content = response.Content;
-            BatchResultDto batchResultDto = JsonHelp.ToObj<BatchResultDto>(response.Content);
-            if (!batchResultDto.success)
-            {
-                return Content(response.Content);
-            }
-            UpdateBatchStockHistory updateBatchStockHistory = new UpdateBatchStockHistory();
-            updateBatchStockHistory.BatchNo = batchItem.BatchNo;
-            updateBatchStockHistory.TotalNumber = entity.totalNumber;
-            ApplicationContext.UpdateBatchStockHistories.Add(updateBatchStockHistory);
-            ApplicationContext.SaveChanges();
-            if (batchItem != null)
-            {
-                batchItem.Quantity = entity.totalNumber;
-                ApplicationContext.Entry<BatchInfo>(batchItem).State = EntityState.Modified;
+                var entity = new PrintBatchHistory();
+                entity.BatchNo = uploadPrintDto.BatchNo;
+                entity.IP = uploadPrintDto.IP;
+                ApplicationContext.PrintBatchHistories.Add(entity);
                 ApplicationContext.SaveChanges();
+                return Content("上传成功");
             }
-            return Content(response.Content);
+            catch (Exception ex)
+            {
+                return Content($"上传失败--{ex.Message}");
+            }
         }
     }
 }

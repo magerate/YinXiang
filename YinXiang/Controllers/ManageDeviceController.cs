@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -57,17 +58,40 @@ namespace YinXiang.Controllers
             var deviceDto = new DeviceDto();
             deviceDto.Device = deviceInfo;
 
-            var userId = ApplicationContext.DeviceAccounts.FirstOrDefault(da => da.Id == deviceInfo.Id).UserId;
+            var userId = ApplicationContext.DeviceAccounts.FirstOrDefault(da => da.DeviceId == deviceInfo.Id).UserId;
             var user = UserManager.FindById(userId);
             deviceDto.User = user;
             return deviceDto;
         }
 
-
         [HttpPost]
         public ActionResult DeleteDevice(int id)
         {
-            return Redirect("index");
+            using (var transaction = ApplicationContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    var deviceInfo = ApplicationContext.DeviceInfos.Where(m => m.Id == id).FirstOrDefault();
+                    if (deviceInfo != null)
+                    {
+                        ApplicationContext.DeviceInfos.Remove(deviceInfo);
+                        ApplicationContext.SaveChanges();
+                    }
+                    var deviceAccount = ApplicationContext.DeviceAccounts.Where(m => m.DeviceId == id).FirstOrDefault();
+                    if (deviceAccount != null)
+                    {
+                        ApplicationContext.DeviceAccounts.Remove(deviceAccount);
+                        ApplicationContext.SaveChanges();
+                    }
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return Content($"删除失败--{ex.Message}");
+                }
+            }
+            return Content("删除成功");
         }
 
         [HttpPost]
@@ -82,8 +106,7 @@ namespace YinXiang.Controllers
                 JobFieldName = device.JobFieldName,
                 Port = device.Port,
             };
-
-
+            
             using (var transaction = ApplicationContext.Database.BeginTransaction())
             {
                 try
@@ -93,7 +116,7 @@ namespace YinXiang.Controllers
 
                     var da = new DeviceAccount()
                     {
-                        Id = deviceInfo.Id,
+                        DeviceId = deviceInfo.Id,
                         UserId = device.UserId,
                     };
                     ApplicationContext.DeviceAccounts.Add(da);
@@ -106,8 +129,73 @@ namespace YinXiang.Controllers
                 }
             }
 
+            return Redirect("index");
+        }
 
-           
+        public ActionResult EditDeviceInto(int id)
+        {
+            var deviceInfo = ApplicationContext.DeviceInfos.Where(m => m.Id == id).FirstOrDefault();
+            if (deviceInfo == null)
+            {
+                deviceInfo = new DeviceInfo();
+            }
+            DeviceInfoDto deviceInfoDto = new DeviceInfoDto();
+            TypeHelp.ObjCopy(deviceInfo, deviceInfoDto);
+            var deviceAccount = ApplicationContext.DeviceAccounts.Where(m => m.DeviceId == id).FirstOrDefault();
+            if (deviceAccount != null)
+            {
+                deviceInfoDto.UserId = deviceAccount.UserId;
+            }
+            var users = UserManager.Users;
+            var userSelectItems = users.Select(u => new SelectListItem()
+            {
+                Text = u.UserName,
+                Value = u.Id,
+                Selected = deviceInfoDto.UserId == u.Id,
+            });
+            deviceInfoDto.AccountItems = userSelectItems;
+            IList<SelectListItem> deviceTypeItems = new List<SelectListItem>();
+            foreach (int i in Enum.GetValues(typeof(DeviceType)))
+            {
+                deviceTypeItems.Add(new SelectListItem()
+                {
+                    Text = Enum.GetName(typeof(DeviceType), i),
+                    Value = i + "",
+                    Selected = (int)deviceInfoDto.Type == i,
+                });
+            }
+            deviceInfoDto.DeviceTypeItems = deviceTypeItems.AsEnumerable();
+            return View(deviceInfoDto);
+        }
+
+        [HttpPost]
+        public ActionResult EditDevice(DeviceInfoDto device)
+        {
+            var deviceInfo = new DeviceInfo();
+            TypeHelp.ObjCopy(device, deviceInfo);
+
+            using (var transaction = ApplicationContext.Database.BeginTransaction())
+            {
+                try
+                {
+                    ApplicationContext.Entry<DeviceInfo>(deviceInfo).State = EntityState.Modified;
+                    ApplicationContext.SaveChanges();
+
+                    var deviceAccount = ApplicationContext.DeviceAccounts.Where(m => m.DeviceId == device.Id).FirstOrDefault();
+                    if (deviceInfo != null)
+                    {
+                        deviceAccount.UserId = device.UserId;
+                        ApplicationContext.Entry<DeviceAccount>(deviceAccount).State = EntityState.Modified;
+                        ApplicationContext.SaveChanges();
+                    };
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
+
             return Redirect("index");
         }
     }

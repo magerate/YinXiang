@@ -34,9 +34,10 @@
                                 grid.Column("Device.Type", header: "设备类型"),
                                 grid.Column("Device.IP", header: "ip地址"),
                                 grid.Column("User.UserName", header: "绑定账号"),
-                                grid.Column("Device.CreateTime", header: "添加日期", format:  @<text>@item.Device.CreateTime.ToString("d")</text>)
-                             ),
-                         tableStyle: "table table-bordered")
+                                grid.Column("Device.CreateTime", header: "添加日期", format:  @<text>@item.Device.CreateTime.ToString("d")</text>),
+                                grid.Column(format: (item) => (Html.Raw("<a class='btn' href='javascript:void(0);'onclick='openEditDevice(" + item.Device.Id + ")'>编辑</a><a class='btn' href='javascript:void(0);'onclick='deleteDevice(" + item.Device.Id + ")'>删除</a>")))
+                    ),
+             tableStyle: "table table-bordered")
             </div>
         </div>
     </div>
@@ -52,42 +53,42 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            @using (Html.BeginForm("addDevice", "ManageDevice", FormMethod.Post))
+            @using (Html.BeginForm("AddDevice", "ManageDevice", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
-            <div class="modal-body">
+                <div class="modal-body">
 
-                <div class="form-group">
-                    <label for="formGroupExampleInput">设备名称</label>
-                    <input type="text" class="form-control" id="Name" name="Name" placeholder="设备名称">
-                </div>
-                <div class="form-group">
-                    <label for="formGroupExampleInput">类型</label>
-                    @Html.DropDownList("Type",
-                    new SelectList(Enum.GetValues(typeof(DeviceType))),
-                    "选择设备类型",
-                    new { @class = "form-control" })
-                    @*<input type="text" class="form-control" id="Type" name="Type" placeholder="设备名称">*@
-                </div>
-                <div class="form-group">
-                    <label for="formGroupExampleInput">IP地址</label>
-                    <input type="text" class="form-control" id="IP" name="IP" placeholder="IP地址">
-                </div>
-                <div class="form-group">
-                    <label for="formGroupExampleInput">端口</label>
-                    <input type="text" class="form-control" id="Port" name="Port" placeholder="端口">
-                </div>
-                <div class="form-group">
-                    <label for="formGroupExampleInput">作业键值</label>
-                    <input type="text" class="form-control" id="JobFieldName" name="JobFieldName" placeholder="作业键值">
-                </div>
-                <div class="form-group">
-                    <label for="formGroupExampleInput">账号</label>
-                    @Html.DropDownList("UserId", Model.AccountItems, "选择账号", new { @class = "form-control" })
-                    @*<input type="text" class="form-control" id="Account" name="Account" placeholder="账号">*@
-                </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">设备名称</label>
+                        <input type="text" class="form-control" id="Name" name="Name" placeholder="设备名称">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">类型</label>
+                        @Html.DropDownList("Type",
+                        new SelectList(Enum.GetValues(typeof(DeviceType))),
+                        "选择设备类型",
+                        new { @class = "form-control" })
+                        @*<input type="text" class="form-control" id="Type" name="Type" placeholder="设备名称">*@
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">IP地址</label>
+                        <input type="text" class="form-control" id="IP" name="IP" placeholder="IP地址">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">端口</label>
+                        <input type="text" class="form-control" id="Port" name="Port" placeholder="端口">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">作业键值</label>
+                        <input type="text" class="form-control" id="JobFieldName" name="JobFieldName" placeholder="作业键值">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">账号</label>
+                        @Html.DropDownList("UserId", Model.AccountItems, "选择账号", new { @class = "form-control" })
+                        @*<input type="text" class="form-control" id="Account" name="Account" placeholder="账号">*@
+                    </div>
 
-            </div>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
                     <button type="submit" class="btn btn-primary">确定</button>
@@ -97,5 +98,26 @@
 
     </div>
 </div>
+<script>
+    function openEditDevice(id) {
+        boostrapDialog('编辑设备', 500,null,  '/ManageDevice/EditDeviceInto?id=' + id, '', 'EditDeviceInfoButtons', 'EditDeviceInfoDiv');
+    }
+    function saveDeviceInfo() {
+        Post('/ManageDevice/EditDevice', function (result) {
+            $('#EditDeviceInfoDiv').modal('hide');
+            location.href = location.href;
+        }, 'frmEditDeviceInfo')
+    }
+    function deleteDevice(id) {
+        Post('/ManageDevice/DeleteDevice?id=' + id, function (result) {
+            if (result == '删除成功') {
+                location.href = location.href;
+                return;
+            }
+            alert(result);
+        });
+    }
+</script>
+
 
 

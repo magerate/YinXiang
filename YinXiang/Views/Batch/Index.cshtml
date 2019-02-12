@@ -48,37 +48,6 @@
         <hr>
         <p>This is a great starting point for new custom pages.</p>*@
 </div>
-<div class="modal fade" id="updateBatchStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">入库</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="formGroupExampleInput">批次码</label>
-                    <input type="text" class="form-control" id="EditBatchNo" name="batchNo" placeholder="批次码" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="formGroupExampleInput">入库数量</label>
-                </div>
-                <div class="input-group">
-                    <input type="text" class="form-control bfh-number" data-min="5" data-max="25" id="TotalNumber" name="totalNumber" placeholder="入库数量" onkeypress="return isNumber(event)" required>
-                    <div class="invalid-feedback">
-                       只能输入数字
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                <button type="submit" class="btn btn-primary" onclick="saveStockNumber()">上传</button>
-            </div>
-        </div>
-    </div>
-</div>
 <div id="alertMsgModal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -116,36 +85,4 @@
                 $('#alertMsgModal').modal('show');
             })
     }
-    $(function () {
-        $('#updateBatchStockModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget);
-            var batchNo = button.data('whatever');
-            var modal = $(this);
-            modal.find('#EditBatchNo').val(batchNo);
-        })
-    });
-    function isNumber(evt) {
-        evt = (evt) ? evt : window.event;
-        var charCode = (evt.which) ? evt.which : evt.keyCode;
-        if ((charCode > 31 && charCode < 48) || charCode > 57) {
-            $('#TotalNumber').addClass('is-invalid');
-            return;
-        }
-        $('#TotalNumber').removeClass('is-invalid');
-        return;
-    }
-    function saveStockNumber() {
-        var batchNo = $('#EditBatchNo').val();
-        var totalNumber = $('#TotalNumber').val();
-        $.post('/Batch/UpdateBatchStock', { batchNo: batchNo, totalNumber: totalNumber},
-            function (result) {
-                var objJson = eval('(' + result + ')');
-                if (objJson.success) {
-                    $('#TotalNumber').val('0');
-                    $('#updateBatchStockModal').modal('hide');
-                }
-                $('#alertMsgModal .modal-body').html(objJson.msg);
-                $('#alertMsgModal').modal('show');
-            })
-    };
 </script>

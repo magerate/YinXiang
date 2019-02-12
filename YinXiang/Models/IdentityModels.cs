@@ -33,6 +33,8 @@ namespace YinXiang.Models
         public IDbSet<ProductionInfo> ProductionInfos { get; set; }
         public IDbSet<SendBatchDeviceHistory> SendBatchDeviceHistories { get; set; }
         public IDbSet<UpdateBatchStockHistory> UpdateBatchStockHistories { get; set; }
+        public IDbSet<PrintBatchHistory> PrintBatchHistories { get; set; }
+        public IDbSet<ApiSetting> ApiSettings { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
