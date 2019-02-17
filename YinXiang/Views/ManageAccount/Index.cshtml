@@ -31,10 +31,12 @@
                 @grid.GetHtml(columns: grid.Columns(
                             grid.Column("UserName", header: "用户名"),
                             grid.Column("BindingIp", header: "IP地址"),
-                            grid.Column("CreateTime", header: "创建日期", format: @<text>@item.CreateTime.ToString("d")</text>)
-                  ),
-                  tableStyle: "table table-bordered"
-            )
+                            grid.Column("CreateTime", header: "创建日期", format: @<text>@item.CreateTime.ToString("d")</text>),
+                         grid.Column(format: (item) => Html.Raw("<a class='btn' href='javascript:void(0);' data-toggle='modal' data-target='#changePassword' data-whatever='" + item.Id + "'>修改密码</a>"
+                         +"<a class='btn' href='javascript:void(0);' onclick='deleteAccount(\"" + item.Id + "\")'>删除</a>"))
+     ),
+         tableStyle: "table table-bordered"
+   )
             </div>
         </div>
     </div>
@@ -86,5 +88,62 @@
 
     </div>
 </div>
+<div class="modal fade" id="changePassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">修改密码</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("ChangePassword", "ManageAccount", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="formGroupExampleInput">旧密码</label>
+                    <input type="hidden" name="Id" value="" />
+                    <input type="password" id="OldPassword" name="OldPassword" class="form-control" required="required">
+
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">新密码</label>
+                    <input type="password" id="NewPassword" name="NewPassword" class="form-control" required="required">
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">确认密码</label>
+                    <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required="required">
+                </div>
+            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">确定</button>
+                </div>
+           }
+        </div>
+
+    </div>
+</div>
+<script src="~/Scripts/jquery/jquery.js"></script>
+<script>
+    $(function () {
+        $('#changePassword').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('whatever');
+            var modal = $(this);
+            modal.find(':hidden[name=Id]').val(id);
+        })
+    });
+    function deleteAccount(id) {
+        $.post('/ManageAccount/Delete', { id: id }, function (result) {
+            if (result == '删除失败') {
+                alert(result);
+                return;
+            }
+            location.reload();
+        });
+    }
+</script>
 
 

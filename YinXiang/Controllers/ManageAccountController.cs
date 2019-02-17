@@ -47,5 +47,26 @@ namespace YinXiang.Controllers
             var result = UserManager.Create(user, model.Password);
             return Redirect("index");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangePassword(ChangePwdViewModel model)
+        {
+            var result = UserManager.ChangePassword(model.Id, model.OldPassword, model.NewPassword);
+            return Redirect("index");
+        }
+
+        [HttpPost]
+        public ActionResult Delete(string id)
+        {
+            var user = UserManager.FindById(id);
+            var result = UserManager.Delete(user);
+            if (!result.Succeeded)
+            {
+                return Content("删除失败");
+            }
+            return Content("删除成功");
+        }
+
     }
 }
