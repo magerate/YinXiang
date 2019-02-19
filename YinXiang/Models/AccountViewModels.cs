@@ -102,7 +102,7 @@ namespace YinXiang.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
-        public string Role { get; set; }
+        public string SelectedRole { get; set; }
     }
 
     public class ResetPasswordViewModel
@@ -142,6 +142,7 @@ namespace YinXiang.Models
     public class RoleViewModel
     {
         public string Id { get; set; }
+
         [Required(AllowEmptyStrings = false)]
         [Display(Name = "角色名称")]
         public string Name { get; set; }
