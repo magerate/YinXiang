@@ -29,10 +29,20 @@ namespace YinXiang.Controllers
 
         }
 
+        public ApplicationRoleManager RoleManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Get<ApplicationRoleManager>();
+            }
+        }
+
         // GET: ManageAccount
         public ActionResult Index()
         {
             IEnumerable<ApplicationUser> model = ApplicationContext.Users;
+            var roles = ApplicationContext.Roles.OrderBy(m=>m.Name).ToList();
+            ViewBag.RoleList = new SelectList(roles, "Name", "Name");
             return View(model);
         }
 
@@ -45,7 +55,32 @@ namespace YinXiang.Controllers
             user.BindingIp = model.BindingIp;
 
             var result = UserManager.Create(user, model.Password);
+            if (result.Succeeded)
+            {
+                UserManager.AddToRole(user.Id, string.IsNullOrEmpty(model.SelectedRole)?"Admin": model.SelectedRole);
+            }
             return Redirect("index");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangePassword(ChangePwdViewModel model)
+        {
+            var result = UserManager.ChangePassword(model.Id, model.OldPassword, model.NewPassword);
+            return Redirect("index");
+        }
+
+        [HttpPost]
+        public ActionResult Delete(string id)
+        {
+            var user = UserManager.FindById(id);
+            var result = UserManager.Delete(user);
+            if (!result.Succeeded)
+            {
+                return Content("删除失败");
+            }
+            return Content("删除成功");
+        }
+
     }
 }

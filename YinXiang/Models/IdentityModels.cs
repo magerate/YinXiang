@@ -37,7 +37,7 @@ namespace YinXiang.Models
         public IDbSet<ApiSetting> ApiSettings { get; set; }
 
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("DefaultConnection")
         {
         }
 
@@ -56,6 +56,24 @@ namespace YinXiang.Models
 
             return DeviceInfos.FirstOrDefault(d => d.Id == da.Id);
         }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            if (modelBuilder == null)
+            {
+                throw new ArgumentNullException("modelBuilder");
+            }
+
+            // Change these from IdentityRole to ApplicationRole:
+            System.Data.Entity.ModelConfiguration.EntityTypeConfiguration<ApplicationRole> entityTypeConfiguration1 =
+                modelBuilder.Entity<ApplicationRole>().ToTable("AspNetRoles");
+
+            entityTypeConfiguration1.Property((ApplicationRole r) => r.Name).IsRequired();
+            
+            base.OnModelCreating(modelBuilder);
+        }
+
+        public new IDbSet<ApplicationRole> Roles { get; set; }
     }
 
 
@@ -63,13 +81,14 @@ namespace YinXiang.Models
     {
         protected override void Seed(ApplicationDbContext context)
         {
-            var store = new RoleStore<IdentityRole>(context);
-            var manager = new RoleManager<IdentityRole>(store);
+            var store = new RoleStore<ApplicationRole>(context);
+            var manager = new RoleManager<ApplicationRole>(store);
             // RoleTypes is a class containing constant string values for different roles
-            List<IdentityRole> identityRoles = new List<IdentityRole>();
-            identityRoles.Add(new IdentityRole() { Name = "Admin" });
+            List<ApplicationRole> identityRoles = new List<ApplicationRole>();
+            identityRoles.Add(new ApplicationRole() { Name = "Admin" });
+            identityRoles.Add(new ApplicationRole() { Name = "Owner" });
 
-            foreach (IdentityRole role in identityRoles)
+            foreach (ApplicationRole role in identityRoles)
             {
                 manager.Create(role);
             }
@@ -95,7 +114,7 @@ namespace YinXiang.Models
         }
     }
 
-    
+
     //public class SampleData
     //{
     //    public static void Initialize(IServiceProvider serviceProvider)
@@ -135,7 +154,21 @@ namespace YinXiang.Models
     //        context.SaveChangesAsync();
     //    }
 
-      
+
 
     //}
+
+    public class ApplicationRole : IdentityRole
+    {
+        public ApplicationRole()
+        : base()
+        {
+        }
+
+        public ApplicationRole(string roleName)
+        : this()
+        {
+            base.Name = roleName;
+        }
+    }
 }
