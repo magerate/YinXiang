@@ -25,20 +25,21 @@
             </ul>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                @{
-                    var grid = new WebGrid(Model.Devices);
-                }
-                @grid.GetHtml(columns: grid.Columns(
-                                grid.Column("Device.Name", header: "设备名称"),
-                                grid.Column("Device.Type", header: "设备类型"),
-                                grid.Column("Device.IP", header: "ip地址"),
-                                grid.Column("User.UserName", header: "绑定账号"),
-                                grid.Column("Device.CreateTime", header: "添加日期", format:  @<text>@item.Device.CreateTime.ToString("d")</text>),
-                                grid.Column(format: (item) => (Html.Raw("<a class='btn' href='javascript:void(0);'onclick='openEditDevice(" + item.Device.Id + ")'>编辑</a><a class='btn' href='javascript:void(0);'onclick='deleteDevice(" + item.Device.Id + ")'>删除</a>")))
-                    ),
-             tableStyle: "table table-bordered")
-            </div>
+            @*<div class="table-responsive">
+            @{
+                var grid = new WebGrid(Model.Devices);
+            }
+            @grid.GetHtml(columns: grid.Columns(
+                            grid.Column("Device.Name", header: "设备名称"),
+                            grid.Column("Device.Type", header: "设备类型"),
+                            grid.Column("Device.IP", header: "ip地址"),
+                            grid.Column("User.UserName", header: "绑定账号"),
+                            grid.Column("Device.CreateTime", header: "添加日期", format:  @<text>@item.Device.CreateTime.ToString("d")</text>),
+                            grid.Column(format: (item) => (Html.Raw("<a class='btn' href='javascript:void(0);'onclick='openEditDevice(" + item.Device.Id + ")'>编辑</a><a class='btn' href='javascript:void(0);'onclick='deleteDevice(" + item.Device.Id + ")'>删除</a>")))
+                ),
+         tableStyle: "table table-bordered")
+        </div>*@
+            @Html.MVCGrid("ManageDeviceGrid")
         </div>
     </div>
 
@@ -105,13 +106,13 @@
     function saveDeviceInfo() {
         Post('/ManageDevice/EditDevice', function (result) {
             $('#EditDeviceInfoDiv').modal('hide');
-            location.href = location.href;
+            MVCGrid.reloadGrid('ManageDeviceGrid');
         }, 'frmEditDeviceInfo')
     }
     function deleteDevice(id) {
         Post('/ManageDevice/DeleteDevice?id=' + id, function (result) {
             if (result == '删除成功') {
-                location.href = location.href;
+                MVCGrid.reloadGrid('ManageDeviceGrid');
                 return;
             }
             alert(result);

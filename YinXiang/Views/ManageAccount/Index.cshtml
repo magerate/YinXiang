@@ -1,4 +1,5 @@
 ﻿@using YinXiang.Models
+@using MVCGrid.Web
 @model IEnumerable<ApplicationUser>
 
 <div class="container-fluid">
@@ -24,20 +25,20 @@
             </ul>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
+            @*<div class="table-responsive">
                 @{
-                    var grid = new WebGrid(Model);
-                }
-                @grid.GetHtml(columns: grid.Columns(
-                            grid.Column("UserName", header: "用户名"),
-                            grid.Column("BindingIp", header: "IP地址"),
-                            grid.Column("CreateTime", header: "创建日期", format: @<text>@item.CreateTime.ToString("d")</text>),
-                         grid.Column(format: (item) => Html.Raw("<a class='btn' href='javascript:void(0);' data-toggle='modal' data-target='#changePassword' data-whatever='" + item.Id + "'>修改密码</a>"
-                         +"<a class='btn' href='javascript:void(0);' onclick='deleteAccount(\"" + item.Id + "\")'>删除</a>"))
-     ),
-         tableStyle: "table table-bordered"
-   )
-            </div>
+                         var grid = new WebGrid(Model);
+                     }
+                     @grid.GetHtml(columns: grid.Columns(
+                                 grid.Column("UserName", header: "用户名"),
+                                 grid.Column("BindingIp", header: "IP地址"),
+                                 grid.Column("CreateTime", header: "创建日期", format: @<text>@item.CreateTime.ToString("d")</text>),
+                              grid.Column(format: (item) => Html.Raw("<a class='btn' href='javascript:void(0);' data-toggle='modal' data-target='#changePassword' data-whatever='" + item.Id + "'>修改密码</a>"
+                              +"<a class='btn' href='javascript:void(0);' onclick='deleteAccount(\"" + item.Id + "\")'>删除</a>"))
+          ),
+              tableStyle: "table table-bordered"
+        )</div>*@
+            @Html.MVCGrid("ManageAccountGrid")
         </div>
     </div>
 
@@ -65,12 +66,12 @@
                 </div>
                 <div class="form-group">
                     <label for="formGroupExampleInput">密码</label>
-                    <input type="password" id="Password" name="Password" class="form-control" required="required">
+                    <input type="password"  name="Password" class="form-control" required="required">
 
                 </div>
                 <div class="form-group">
                     <label for="formGroupExampleInput">密码</label>
-                    <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required="required">
+                    <input type="password" name="ConfirmPassword" class="form-control" required="required">
                 </div>
 
                 <div class="form-group">
@@ -150,7 +151,7 @@
                 alert(result);
                 return;
             }
-            location.reload();
+            MVCGrid.reloadGrid('ManageAccountGrid');
         });
     }
 </script>
