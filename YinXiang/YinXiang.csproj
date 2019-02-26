@@ -458,11 +458,8 @@
     <Content Include="Views\ManageAccount\Index.cshtml" />
     <Content Include="Views\ManageDevice\Index.cshtml" />
     <Content Include="Views\ProductionResult\Index.cshtml" />
-    <Content Include="Views\Batch\List.cshtml" />
     <Content Include="Views\SendBatchDeviceHistory\Index.cshtml" />
-    <Content Include="Views\SendBatchDeviceHistory\List.cshtml" />
     <Content Include="Views\UpdateBatchStockHistory\Index.cshtml" />
-    <Content Include="Views\UpdateBatchStockHistory\List.cshtml" />
     <Content Include="Views\ManageDevice\EditDeviceInto.cshtml" />
     <Content Include="Views\ApiSetting\Index.cshtml" />
   </ItemGroup>

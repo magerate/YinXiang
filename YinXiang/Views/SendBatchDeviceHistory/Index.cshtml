@@ -22,7 +22,7 @@
     </div>
     <div class="card mb-3">
         <div id="SendBatchDeviceHistoryListDiv" class="card-body">
-
+            @Html.MVCGrid("SendBatchDeviceHistoryGrid")
         </div>
     </div>
     <!-- Page Content -->
@@ -64,7 +64,6 @@
 <script src="~/Scripts/jquery/jquery.js"></script>
 <script>
     $(function () {
-        loadSendBatchDeviceHistoryData();
         $('#updateBatchStockModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);
             var objData = button.data('whatever');
@@ -74,9 +73,7 @@
         })
     });
     function loadSendBatchDeviceHistoryData() {
-        $.get('/SendBatchDeviceHistory/List?' + $('#frmSendBatchDeviceHistorySearch').trimSerialize(), function (data) {
-            $('#SendBatchDeviceHistoryListDiv').html(data);
-        });
+        location.href = '/SendBatchDeviceHistory/Index?' + $('#frmSendBatchDeviceHistorySearch').trimSerialize();
     }
     function sortCallback() {
         $('a[data-swhglnk="true"]').attr('href', function () {

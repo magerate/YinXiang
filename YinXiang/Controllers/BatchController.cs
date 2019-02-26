@@ -37,23 +37,33 @@ namespace YinXiang.Controllers
         }
 
         // GET: Batch
-        public ActionResult Index()
+        public ActionResult Index(string batchDate = "", bool isLoad = false)
         {
-            ViewBag.BatchDate = DateTime.Now.Date;
+            ViewBag.BatchDate = string.IsNullOrEmpty(batchDate) ? DateTime.Now.Date : Convert.ToDateTime(batchDate).Date;
+            ViewBag.IsLoad = isLoad;
             return View();
         }
 
         public ActionResult List(BatchSearchDto search)
+        {
+            var batchDtos = GetBatchDtos(search, ApplicationContext);
+            ViewBag.TotalRowCounts = batchDtos.Count;
+            return View(batchDtos);
+        }
+
+        public IList<BatchDto> GetBatchDtos(BatchSearchDto search, ApplicationDbContext applicationDbContext)
         {
             if (search == null)
             {
                 search = new BatchSearchDto();
             }
             if (!search.batchDate.HasValue)
+            {
                 search.batchDate = DateTime.Now;
+            }
             DateTime startBatchDate = search.batchDate.Value.Date;
             DateTime endBatchDate = startBatchDate.AddDays(1).AddSeconds(-1);
-            ApiSetting apiSetting = ApplicationContext.ApiSettings.FirstOrDefault() ?? new ApiSetting();
+            ApiSetting apiSetting = applicationDbContext.ApiSettings.FirstOrDefault() ?? new ApiSetting();
             if (apiSetting.Id == 0)
             {
                 apiSetting.ApiUrl = "http://x97700.iok.la:32611/ycProductionController.do";
@@ -63,14 +73,14 @@ namespace YinXiang.Controllers
             IRestResponse response = client.Execute(request);
             if (response.StatusCode != System.Net.HttpStatusCode.OK || string.IsNullOrEmpty(response.Content))
             {
-                return View(new List<BatchDto>());
+                return new List<BatchDto>();
             }
             var content = response.Content;
             BatchResultDto batchResultDto = JsonHelp.ToObj<BatchResultDto>(response.Content);
             IList<BatchInfo> batchInfoDatas = new List<BatchInfo>();
             foreach (var item in batchResultDto.obj)
             {
-                var oldItem = ApplicationContext.BatchInfos.Where(m => m.BatchNo == item.batchNo).FirstOrDefault();
+                var oldItem = applicationDbContext.BatchInfos.Where(m => m.BatchNo == item.batchNo).FirstOrDefault();
                 if (oldItem == null)
                 {
                     BatchInfo batchInfo = new BatchInfo();
@@ -80,7 +90,7 @@ namespace YinXiang.Controllers
                     batchInfo.BatchDate = item.batchDate;
                     batchInfo.CreateDate = item.createDate;
                     batchInfo.RetrospectNo = item.retrospectNo;
-                    ApplicationContext.Entry<BatchInfo>(batchInfo).State = EntityState.Added;
+                    applicationDbContext.Entry<BatchInfo>(batchInfo).State = EntityState.Added;
                 }
                 else
                 {
@@ -90,10 +100,10 @@ namespace YinXiang.Controllers
                     oldItem.BatchDate = item.batchDate;
                     oldItem.CreateDate = item.createDate;
                     oldItem.RetrospectNo = item.retrospectNo;
-                    ApplicationContext.Entry<BatchInfo>(oldItem).State = EntityState.Modified;
+                    applicationDbContext.Entry<BatchInfo>(oldItem).State = EntityState.Modified;
                 }
-                ApplicationContext.SaveChanges();
-                item.IsSent = ApplicationContext.SendBatchDeviceHistories.Any(m => m.BatchNo == item.batchNo);
+                applicationDbContext.SaveChanges();
+                item.IsSent = applicationDbContext.SendBatchDeviceHistories.Any(m => m.BatchNo == item.batchNo);
             }
             batchResultDto.obj.Where(m => m.batchDate >= startBatchDate && m.batchDate <= endBatchDate);
             if (!string.IsNullOrEmpty(search.batchNo))
@@ -130,9 +140,8 @@ namespace YinXiang.Controllers
             {
                 batchResultDto.obj = (search.sortdir == "DESC" ? batchResultDto.obj.OrderByDescending(m => m.batchNo) : batchResultDto.obj.OrderBy(m => m.batchNo)).ToList();
             }
-            ViewBag.TotalRowCounts = batchResultDto.obj.Count;
-            batchResultDto.obj = batchResultDto.obj.Skip(((search.page > 0 ? search.page : 1) - 1) * search.pageSize).Take(search.pageSize).ToList();
-            return View(batchResultDto.obj);
+            batchResultDto.obj = batchResultDto.obj.Skip(((search.page > 0 ? search.page : 1) - 1) * search.pageSize).Take(search.pageSize).ToList();         
+            return batchResultDto.obj;
         }
 
         [HttpPost]
