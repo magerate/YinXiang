@@ -71,7 +71,7 @@
 <script src="~/Scripts/jquery/jquery.js"></script>
 <script>
     function loadBatchData() {
-       location.href = '/Batch/Index?isLoad=true' + '&' + $('#frmBatchSearch').trimSerialize();       
+       location.href = '/Batch/Index?' + $('#frmBatchSearch').trimSerialize();       
     }
     function sortCallback() {
         $('a[data-swhglnk="true"]').attr('href', function () {

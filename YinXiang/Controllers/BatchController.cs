@@ -37,10 +37,10 @@ namespace YinXiang.Controllers
         }
 
         // GET: Batch
-        public ActionResult Index(string batchDate = "", bool isLoad = false)
+        public ActionResult Index(string batchDate = "")
         {
             ViewBag.BatchDate = string.IsNullOrEmpty(batchDate) ? DateTime.Now.Date : Convert.ToDateTime(batchDate).Date;
-            ViewBag.IsLoad = isLoad;
+            ViewBag.IsLoad = !string.IsNullOrEmpty(batchDate);
             return View();
         }
 
