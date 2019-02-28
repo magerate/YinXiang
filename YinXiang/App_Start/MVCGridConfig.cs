@@ -176,10 +176,14 @@ namespace YinXiang
             MVCGridDefinitionTable.Add("BatchGrid", new MVCGridBuilder<BatchDto>(colDefauls)
                 .AddColumns(cols =>
                 {
-                    cols.Add("batchNo").WithHeaderText("批次码")
-                        .WithValueExpression(p => p.batchNo);
                     cols.Add("name").WithHeaderText("产品名称")
                         .WithValueExpression(p => p.name);
+                    cols.Add("sku").WithHeaderText("产品规格")
+                        .WithValueExpression(p => p.sku);
+                    cols.Add("batchNo").WithHeaderText("生产单号")
+                        .WithValueExpression(p => p.batchNo);
+                    cols.Add("retrospectNo").WithHeaderText("溯源码")
+                       .WithValueExpression(p => p.retrospectNo);
                     cols.Add("batchDate").WithHeaderText("日期")
                         .WithValueExpression(p => p.batchDate.ToString("yyyy-MM-dd"))
                         .WithFiltering(true);

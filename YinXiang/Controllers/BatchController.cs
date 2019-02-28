@@ -66,7 +66,7 @@ namespace YinXiang.Controllers
             ApiSetting apiSetting = applicationDbContext.ApiSettings.FirstOrDefault() ?? new ApiSetting();
             if (apiSetting.Id == 0)
             {
-                apiSetting.ApiUrl = "http://x97700.iok.la:32611/ycProductionController.do";
+                apiSetting.ApiUrl = "http://188.188.1.5:8080/jeecg/ycProductionController.do";
             }
             var client = new RestClient(apiSetting.ApiUrl + "?getListByBatchDate&batchDate=" + startBatchDate.ToString("yyyy-MM-dd"));
             var request = new RestRequest(Method.GET);
