@@ -26,7 +26,7 @@ namespace YinXiang.Controllers
             ApiSetting entity = ApplicationContext.ApiSettings.FirstOrDefault() ?? new ApiSetting();
             if (entity.Id == 0)
             {
-                entity.ApiUrl = "http://x97700.iok.la:32611/ycProductionController.do";
+                entity.ApiUrl = "http://188.188.1.5:8080/jeecg/ycProductionController.do";
             }
             return View(entity);
         }
