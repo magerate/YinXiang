@@ -184,7 +184,7 @@ namespace YinXiang
                         .WithValueExpression(p => p.batchNo);
                     cols.Add("retrospectNo").WithHeaderText("溯源码")
                        .WithValueExpression(p => p.retrospectNo);
-                    cols.Add("batchDate").WithHeaderText("日期")
+                    cols.Add("batchDate").WithHeaderText("生产日期（批次）")
                         .WithValueExpression(p => p.batchDate.ToString("yyyy-MM-dd"))
                         .WithFiltering(true);
                     cols.Add("createDate").WithHeaderText("创建时间")
