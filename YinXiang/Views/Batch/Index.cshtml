@@ -26,7 +26,9 @@
                 <div class="form-group col-md-3">
                     <label for="formGroupExampleInput">日期</label>
                     <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd">
-                        <input type="text" class="form-control" name="batchDate" value="@(ViewBag.BatchDate.ToString("yyyy-MM-dd"))">
+                        <input type="text" class="form-control" name="batchDate"
+                               value="@(ViewBag.BatchDate.ToString("yyyy-MM-dd"))" 
+                               data-mvcgrid-type="filter" data-mvcgrid-option="batchDate">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-th"></span>
                         </div>
@@ -39,8 +41,12 @@
             </div>
         </form>
     </div>
-    <div class="card mb-3">
-        <div id="BatchListDiv" class="card-body">
+    <div class="card mb-3" style="width:100%;">
+        <div id="BatchListDiv" class="card-body" style="width:100%;">
+           @if(ViewBag.IsLoad)
+           {
+               @Html.MVCGrid("BatchGrid")
+           }
         </div>
     </div>
     <!-- Page Content -->
@@ -65,9 +71,7 @@
 <script src="~/Scripts/jquery/jquery.js"></script>
 <script>
     function loadBatchData() {
-        $.get('/Batch/List?' + $('#frmBatchSearch').trimSerialize(), function (data) {
-            $('#BatchListDiv').html(data);
-        });
+       location.href = '/Batch/Index?' + $('#frmBatchSearch').trimSerialize();       
     }
     function sortCallback() {
         $('a[data-swhglnk="true"]').attr('href', function () {

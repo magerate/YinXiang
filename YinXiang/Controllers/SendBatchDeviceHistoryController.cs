@@ -22,9 +22,9 @@ namespace YinXiang.Controllers
 
         }
         // GET: SendBatchDeviceHistory
-        public ActionResult Index()
+        public ActionResult Index(string CreateTime = "")
         {
-            ViewBag.CreateTime = DateTime.Now.Date;
+            ViewBag.CreateTime = string.IsNullOrEmpty(CreateTime) ? DateTime.Now.Date : Convert.ToDateTime(CreateTime).Date;           
             return View();
         }
 
