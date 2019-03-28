@@ -156,7 +156,7 @@ namespace YinXiang.Controllers
             {
                 return Content("该账号还未绑定打码设备");
             }
-
+            sendBatchDto.IP = device.IP;
             if (device.Type == DeviceType.X30)
             {
                 try
