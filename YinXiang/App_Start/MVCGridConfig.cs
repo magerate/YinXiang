@@ -194,7 +194,7 @@ namespace YinXiang
                         .WithHeaderText(" ")
                         .WithValueExpression((p, c) => p.IsSent ? "已发送" : ("<a id='btn_" + p.batchNo
                         + "' class='btn' href='javascript:void(0);'onclick='sendBatchNoToDevice(\""
-                        + p.retrospectNo + "\")'>发送</a>"));
+                        + p.batchNo + "\")'>发送</a>"));
                 })
                 .WithFiltering(true)
                 .WithPreloadData(false)
