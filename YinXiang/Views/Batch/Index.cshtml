@@ -80,7 +80,7 @@
     }
     function sendBatchNoToDevice(batchNo) {
         $.post('/Batch/SendBatchNoes',
-            { 'BatchNo': batchNo, 'DeviceName': 'test', 'IP': '127.0.0.0', 'Account': 'test account' },
+            { 'BatchNo': batchNo },
             function (result) {
                 if (result == "发送成功") {
                     $('#btn_' + batchNo).parent().html('已发送');
