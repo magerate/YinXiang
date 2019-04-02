@@ -182,7 +182,7 @@ namespace YinXiang.Controllers
                 {
                     var client = new iMarkClient();
                     await client.TcpClient.ConnectAsync(device.IP, device.Port);
-                    await client.SendAsync(sendBatchDto.BatchNo);
+                    var response = await client.SendAsync(sendBatchDto.BatchNo);
                     client.TcpClient.Close();
                     return SendSucess(sendBatchDto);
                 }

@@ -9,7 +9,10 @@ namespace YinXiang
     {
         public TcpClient TcpClient { get; private set; } = new TcpClient();
         public Encoding Encoding { get; set; } = Encoding.ASCII;
-        public int EndChar { get; set; } = 0;
+        public int EndChar { get; set; } = 3;
+
+        //sucess response is 8 \b
+        public static readonly string ResponseString = "\b";
 
         public async Task<string> SendAsync(string message)
         {
