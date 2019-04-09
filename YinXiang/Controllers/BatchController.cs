@@ -103,6 +103,7 @@ namespace YinXiang.Controllers
                     applicationDbContext.Entry<BatchInfo>(oldItem).State = EntityState.Modified;
                 }
                 applicationDbContext.SaveChanges();
+                item.IsSent = false;
                 item.IsSent = applicationDbContext.SendBatchDeviceHistories.Any(m => m.BatchNo == item.batchNo);
             }
             batchResultDto.obj.Where(m => m.batchDate >= startBatchDate && m.batchDate <= endBatchDate);
