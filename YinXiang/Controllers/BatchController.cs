@@ -148,9 +148,9 @@ namespace YinXiang.Controllers
         [HttpPost]
         public async Task<ActionResult> SendBatchNoes(SendBatchDto sendBatchDto)
         {
-            SendBatchDeviceHistory sendBatchDeviceHistory = ApplicationContext.SendBatchDeviceHistories.Where(m => m.BatchNo == sendBatchDto.BatchNo).FirstOrDefault();
-            if (sendBatchDeviceHistory != null)
-                return Content("此批次码不能重复发送！");
+            //SendBatchDeviceHistory sendBatchDeviceHistory = ApplicationContext.SendBatchDeviceHistories.Where(m => m.BatchNo == sendBatchDto.BatchNo).FirstOrDefault();
+            //if (sendBatchDeviceHistory != null)
+            //    return Content("此批次码不能重复发送！");
 
             var device = ApplicationContext.GetDeviceByUserId(User.Identity.GetUserId());
             if (null == device)
