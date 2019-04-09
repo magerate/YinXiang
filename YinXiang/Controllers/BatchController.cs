@@ -180,9 +180,24 @@ namespace YinXiang.Controllers
             {
                 try
                 {
+                    //var tcpClient = new System.Net.Sockets.TcpClient();
+                    //tcpClient.Connect("188.188.5.5", 9069);
+                    //var str = "blah";
+                    //var bytes = System.Text.ASCIIEncoding.ASCII.GetBytes(str);
+                    //tcpClient.GetStream().Write(bytes, 0, bytes.Length);
+
+
+                    //client.TcpClient.Connect("188.188.4.232", 9069);
+                    //var tcpClient = new System.Net.Sockets.TcpClient();
+                    //tcpClient.Connect("188.188.4.232", 9069);
+                    //tcpClient.Close();
+
                     var client = new iMarkClient();
-                    await client.TcpClient.ConnectAsync(device.IP, device.Port);
-                    var response = await client.SendAsync(sendBatchDto.BatchNo);
+                    client.TcpClient.ReceiveTimeout = 500;
+                    client.TcpClient.SendTimeout = 500;
+
+                    client.TcpClient.Connect(device.IP, device.Port);
+                    var response = client.Send(sendBatchDto.BatchNo);
                     client.TcpClient.Close();
                     return SendSucess(sendBatchDto);
                 }

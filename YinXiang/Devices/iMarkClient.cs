@@ -30,5 +30,22 @@ namespace YinXiang
             var responseStr = Encoding.GetString(data, 0, bytesRead);
             return responseStr;
         }
+
+        public string Send(string message)
+        {
+            var endChar = (char)EndChar;
+            var msg = message + new string(new[] { endChar });
+
+            Byte[] data = Encoding.GetBytes(msg);
+            NetworkStream stream = TcpClient.GetStream();
+            stream.Write(data, 0, data.Length);
+
+            data = new Byte[256];
+
+            // Read the first batch of the TcpServer response bytes.
+            int bytesRead = stream.Read(data, 0, data.Length);
+            var responseStr = Encoding.GetString(data, 0, bytesRead);
+            return responseStr;
+        }
     }
 }
