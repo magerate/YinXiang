@@ -104,7 +104,7 @@ namespace YinXiang.Controllers
                 }
                 applicationDbContext.SaveChanges();
                 item.IsSent = false;
-                item.IsSent = applicationDbContext.SendBatchDeviceHistories.Any(m => m.BatchNo == item.batchNo);
+                //item.IsSent = applicationDbContext.SendBatchDeviceHistories.Any(m => m.BatchNo == item.batchNo);
             }
             batchResultDto.obj.Where(m => m.batchDate >= startBatchDate && m.batchDate <= endBatchDate);
             if (!string.IsNullOrEmpty(search.batchNo))
