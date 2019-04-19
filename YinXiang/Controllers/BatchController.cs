@@ -80,7 +80,7 @@ namespace YinXiang.Controllers
             IList<BatchInfo> batchInfoDatas = new List<BatchInfo>();
             foreach (var item in batchResultDto.obj)
             {
-                var oldItem = applicationDbContext.BatchInfos.Where(m => m.BatchNo == item.batchNo).FirstOrDefault();
+                var oldItem = applicationDbContext.BatchInfos.Where(m => m.RetrospectNo == item.retrospectNo).FirstOrDefault();
                 if (oldItem == null)
                 {
                     BatchInfo batchInfo = new BatchInfo();
@@ -167,7 +167,7 @@ namespace YinXiang.Controllers
                     var client = new X30Client();
                     await client.ConnectAsync(device.IP);
                     var jobCommand = JobCommand.CreateJobUpdate();
-                    jobCommand.Fields.Add(device.JobFieldName, sendBatchDto.BatchNo);
+                    jobCommand.Fields.Add(device.JobFieldName, "02"+sendBatchDto.RetrospectNo+"03");
                     await client.UpdateJob(jobCommand);
                     client.TcpClient.Close();
                     return SendSucess(sendBatchDto);
@@ -198,7 +198,7 @@ namespace YinXiang.Controllers
                     client.TcpClient.SendTimeout = 500;
 
                     client.TcpClient.Connect(device.IP, device.Port);
-                    var response = client.Send(sendBatchDto.BatchNo);
+                    var response = client.Send("02" + sendBatchDto.RetrospectNo + "," + sendBatchDto.PrintCount + "03");
                     client.TcpClient.Close();
                     return SendSucess(sendBatchDto);
                 }
@@ -217,9 +217,11 @@ namespace YinXiang.Controllers
         {
             var sendBatchDeviceHistory = new SendBatchDeviceHistory();
             sendBatchDeviceHistory.BatchNo = sendBatchDto.BatchNo;
+            sendBatchDeviceHistory.RetrospectNo = sendBatchDto.RetrospectNo;
             sendBatchDeviceHistory.DeviceName = sendBatchDto.DeviceName;
             sendBatchDeviceHistory.IP = sendBatchDto.IP;
             sendBatchDeviceHistory.Account = sendBatchDto.Account;
+            sendBatchDeviceHistory.PrintCount = sendBatchDto.PrintCount;
             ApplicationContext.SendBatchDeviceHistories.Add(sendBatchDeviceHistory);
             ApplicationContext.SaveChanges();
             return Content("发送成功");

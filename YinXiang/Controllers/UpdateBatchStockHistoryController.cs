@@ -64,7 +64,7 @@ namespace YinXiang.Controllers
             foreach (var item in dataList)
             {
                 UpdateBatchStockHistoryDto entity = new UpdateBatchStockHistoryDto();
-                var batchItem = ApplicationContext.BatchInfos.Where(m => m.BatchNo == item.BatchNo).FirstOrDefault();
+                var batchItem = ApplicationContext.BatchInfos.Where(m => m.RetrospectNo == item.RetrospectNo).FirstOrDefault();
                 if (batchItem != null)
                 {
                     TypeHelp.ObjCopy(batchItem, entity);

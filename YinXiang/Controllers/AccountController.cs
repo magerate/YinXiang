@@ -74,6 +74,11 @@ namespace YinXiang.Controllers
             }
 
             var user = await UserManager.FindByNameAsync(model.UserName);
+            if (user == null)
+            {
+                ModelState.AddModelError("", $"{model.UserName}不存在");
+                return View(model);
+            }
             var role = await UserManager.GetRolesAsync(user.Id);
             if (!role.Contains("Admin") && Request.UserHostAddress != user.BindingIp)
             {

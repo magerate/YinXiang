@@ -193,8 +193,9 @@ namespace YinXiang
                         .WithSorting(false)
                         .WithHeaderText(" ")
                         .WithValueExpression((p, c) => p.IsSent ? "已发送" : ("<a id='btn_" + p.batchNo
-                        + "' class='btn' href='javascript:void(0);'onclick='sendBatchNoToDevice(\""
-                        + p.batchNo + "\")'>发送</a>"));
+                        + "' class='btn' href='javascript:void(0);' data-toggle='modal' "
+                        + "data-target='#sendBatchModal' data-whatever='{\"BatchNo\":\"" + p.batchNo
+                        + "\",\"RetrospectNo\":\"" + p.retrospectNo + "\"}'>发送</a>"));
                 })
                 .WithFiltering(true)
                 .WithPreloadData(false)
@@ -252,6 +253,8 @@ namespace YinXiang
                 {
                     cols.Add("BatchNo").WithHeaderText("批次码")
                         .WithValueExpression(p => p.BatchNo);
+                    cols.Add("RetrospectNo").WithHeaderText("溯源码")
+                        .WithValueExpression(p => p.RetrospectNo);
                     cols.Add("ProductName").WithHeaderText("产品名称")
                         .WithValueExpression(p => p.ProductName);
                     cols.Add("SKU").WithHeaderText("产品规格")
@@ -266,6 +269,8 @@ namespace YinXiang
                         .WithValueExpression(p => p.Account);
                     cols.Add("CreateTime").WithHeaderText("时间")
                         .WithValueExpression(p => p.CreateTime!=null ? p.CreateTime.ToString("yyyy-MM-dd HH:dd:ss") : "");
+                    cols.Add("PrintCount").WithHeaderText("打印数量")
+                         .WithValueExpression(p => p.PrintCount.ToString());
                     cols.Add("ScannedCounts").WithHeaderText("扫描次数")
                         .WithValueExpression(p => p.ScannedCounts.ToString());
                     cols.Add("Operate").WithHtmlEncoding(false)
@@ -273,7 +278,7 @@ namespace YinXiang
                         .WithHeaderText(" ")
                         .WithValueExpression((p, c) => "<a class='btn' href='javascript:void(0);' data-toggle='modal' "
                         +"data-target='#updateBatchStockModal' data-whatever='{\"BatchNo\":\"" + p.BatchNo 
-                        + "\",\"ScannedCounts\":" + p.ScannedCounts + "}'>入库</a>");
+                        + "\",\"RetrospectNo\":\"" + p.RetrospectNo + "\",\"ScannedCounts\":" + p.ScannedCounts + "}'>入库</a>");
                 })
                 .WithPreloadData(false)
                 .WithSorting(true, "BatchNo")
@@ -299,6 +304,9 @@ namespace YinXiang
                         {
                             case "batchno":
                                 query = query.OrderBy(p => p.BatchNo, options.SortDirection);
+                                break;
+                            case "retrospectNo":
+                                query = query.OrderBy(p => p.RetrospectNo, options.SortDirection);
                                 break;
                             case "productname":
                                 query = query.OrderBy(p => p.ProductName, options.SortDirection);
@@ -340,6 +348,8 @@ namespace YinXiang
                 {
                     cols.Add("BatchNo").WithHeaderText("批次码")
                         .WithValueExpression(p => p.BatchNo);
+                    cols.Add("RetrospectNo").WithHeaderText("溯源码")
+                        .WithValueExpression(p => p.RetrospectNo);
                     cols.Add("ProductName").WithHeaderText("产品名称")
                         .WithValueExpression(p => p.ProductName);
                     cols.Add("SKU").WithHeaderText("产品规格")
@@ -374,6 +384,9 @@ namespace YinXiang
                         {
                             case "batchno":
                                 query = query.OrderBy(p => p.BatchNo, options.SortDirection);
+                                break;
+                            case "retrospectNo":
+                                query = query.OrderBy(p => p.RetrospectNo, options.SortDirection);
                                 break;
                             case "productname":
                                 query = query.OrderBy(p => p.ProductName, options.SortDirection);
@@ -426,13 +439,13 @@ namespace YinXiang
             foreach (var item in dataList)
             {
                 SendBatchDeviceHistoryDto entity = new SendBatchDeviceHistoryDto();
-                var batchItem = ApplicationContext.BatchInfos.Where(m => m.BatchNo == item.BatchNo).FirstOrDefault();
+                var batchItem = ApplicationContext.BatchInfos.Where(m => m.RetrospectNo == item.RetrospectNo).FirstOrDefault();
                 if (batchItem != null)
                 {
                     TypeHelp.ObjCopy(batchItem, entity);
                 }
                 TypeHelp.ObjCopy(item, entity);
-                entity.ScannedCounts = ApplicationContext.PrintBatchHistories.Where(m => m.BatchNo == entity.BatchNo).Count();
+                entity.ScannedCounts = ApplicationContext.PrintBatchHistories.Where(m => m.RetrospectNo == entity.RetrospectNo).Count();
                 dtoList.Add(entity);
             }
             return dtoList;
@@ -446,7 +459,7 @@ namespace YinXiang
             foreach (var item in dataList)
             {
                 UpdateBatchStockHistoryDto entity = new UpdateBatchStockHistoryDto();
-                var batchItem = ApplicationContext.BatchInfos.Where(m => m.BatchNo == item.BatchNo).FirstOrDefault();
+                var batchItem = ApplicationContext.BatchInfos.Where(m => m.RetrospectNo == item.RetrospectNo).FirstOrDefault();
                 if (batchItem != null)
                 {
                     TypeHelp.ObjCopy(batchItem, entity);

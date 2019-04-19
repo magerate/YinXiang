@@ -9,6 +9,7 @@ namespace YinXiang.Models
     {
         public int Id { get; set; }
         public string BatchNo { get; set; }
+        public string RetrospectNo { get; set; }
         public int TotalNumber { get; set; }
         public DateTime CreateTime { get; set; } = DateTime.Now;
     }

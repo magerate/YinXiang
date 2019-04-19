@@ -41,8 +41,8 @@ namespace YinXiang.Controllers
         public ActionResult Index()
         {
             IEnumerable<ApplicationUser> model = ApplicationContext.Users;
-            var roles = ApplicationContext.Roles.OrderBy(m=>m.Name).ToList();
-            ViewBag.RoleList = new SelectList(roles, "Name", "Name");
+            var roles = ApplicationContext.Roles.OrderBy(m => m.Name).ToList();
+            ViewBag.RoleList = new SelectList(roles, "Name", "Name", "Owner"); ;
             return View(model);
         }
 
@@ -57,7 +57,7 @@ namespace YinXiang.Controllers
             var result = UserManager.Create(user, model.Password);
             if (result.Succeeded)
             {
-                UserManager.AddToRole(user.Id, string.IsNullOrEmpty(model.SelectedRole)?"Admin": model.SelectedRole);
+                UserManager.AddToRole(user.Id, string.IsNullOrEmpty(model.SelectedRole)?"Owner": model.SelectedRole);
             }
             return Redirect("index");
         }

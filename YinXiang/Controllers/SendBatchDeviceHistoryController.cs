@@ -78,13 +78,13 @@ namespace YinXiang.Controllers
             foreach (var item in dataList)
             {
                 SendBatchDeviceHistoryDto entity = new SendBatchDeviceHistoryDto();
-                var batchItem = ApplicationContext.BatchInfos.Where(m => m.BatchNo == item.BatchNo).FirstOrDefault();
+                var batchItem = ApplicationContext.BatchInfos.Where(m => m.RetrospectNo == item.RetrospectNo).FirstOrDefault();
                 if (batchItem != null)
                 {
                     TypeHelp.ObjCopy(batchItem, entity);
                 }
                 TypeHelp.ObjCopy(item, entity);
-                entity.ScannedCounts = ApplicationContext.PrintBatchHistories.Where(m => m.BatchNo == entity.BatchNo).Count();
+                entity.ScannedCounts = ApplicationContext.PrintBatchHistories.Where(m => m.RetrospectNo == entity.RetrospectNo).Count();
                 Model.Add(entity);
             }
             return View(Model);
@@ -93,7 +93,7 @@ namespace YinXiang.Controllers
         [HttpPost]
         public ActionResult UpdateBatchStock(SendBatchStockDto entity)
         {
-            var batchItem = ApplicationContext.BatchInfos.Where(m => m.BatchNo == entity.batchNo).FirstOrDefault();
+            var batchItem = ApplicationContext.BatchInfos.Where(m => m.RetrospectNo == entity.retrospectNo).FirstOrDefault();
             if (batchItem == null)
             {
                 return Content("此批次码不存在");
@@ -123,11 +123,13 @@ namespace YinXiang.Controllers
             }
             UpdateBatchStockHistory updateBatchStockHistory = new UpdateBatchStockHistory();
             updateBatchStockHistory.BatchNo = batchItem.BatchNo;
+            updateBatchStockHistory.RetrospectNo = batchItem.RetrospectNo;
             updateBatchStockHistory.TotalNumber = entity.totalNumber;
             ApplicationContext.UpdateBatchStockHistories.Add(updateBatchStockHistory);
             ApplicationContext.SaveChanges();
             if (batchItem != null)
             {
+                batchItem.RetrospectNo = entity.retrospectNo;
                 batchItem.Quantity = entity.totalNumber;
                 ApplicationContext.Entry<BatchInfo>(batchItem).State = EntityState.Modified;
                 ApplicationContext.SaveChanges();

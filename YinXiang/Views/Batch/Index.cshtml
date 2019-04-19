@@ -27,7 +27,7 @@
                     <label for="formGroupExampleInput">日期</label>
                     <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd">
                         <input type="text" class="form-control" name="batchDate"
-                               value="@(ViewBag.BatchDate.ToString("yyyy-MM-dd"))" 
+                               value="@(ViewBag.BatchDate.ToString("yyyy-MM-dd"))"
                                data-mvcgrid-type="filter" data-mvcgrid-option="batchDate">
                         <div class="input-group-addon">
                             <span class="glyphicon glyphicon-th"></span>
@@ -43,16 +43,51 @@
     </div>
     <div class="card mb-3" style="width:100%;">
         <div id="BatchListDiv" class="card-body" style="width:100%;">
-           @if(ViewBag.IsLoad)
-           {
-               @Html.MVCGrid("BatchGrid")
-           }
+            @if (ViewBag.IsLoad)
+            {
+                @Html.MVCGrid("BatchGrid")
+            }
         </div>
     </div>
     <!-- Page Content -->
     @*<h1>Blank Page</h1>
         <hr>
         <p>This is a great starting point for new custom pages.</p>*@
+</div>
+<div class="modal fade" id="sendBatchModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">发送</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="formGroupExampleInput">批次码</label>
+                    <input type="text" class="form-control" id="EditBatchNo" name="BatchNo" placeholder="批次码" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">溯源码</label>
+                    <input type="text" class="form-control" id="EditRetrospectNo" name="RetrospectNo" placeholder="溯源码" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">打印数量</label>
+                </div>
+                <div class="input-group">
+                    <input type="text" class="form-control bfh-number" data-min="5" data-max="25" id="TotalNumber" name="totalNumber" placeholder="打印数量">
+                    <div class="invalid-feedback">
+                        只能输入数字
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="submit" class="btn btn-primary" onclick="sendBatchNoToDevice()">上传</button>
+            </div>
+        </div>
+    </div>
 </div>
 <div id="alertMsgModal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-sm">
@@ -70,17 +105,29 @@
 
 <script src="/Scripts/jquery/jquery.js"></script>
 <script>
+    $(function () {
+        $('#sendBatchModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var objData = button.data('whatever');
+            var modal = $(this);
+            modal.find('#EditBatchNo').val(objData.BatchNo);
+            modal.find('#EditRetrospectNo').val(objData.RetrospectNo);
+        })
+    });
     function loadBatchData() {
-       location.href = '/Batch/Index?' + $('#frmBatchSearch').trimSerialize();       
+        location.href = '/Batch/Index?' + $('#frmBatchSearch').trimSerialize();
     }
     function sortCallback() {
         $('a[data-swhglnk="true"]').attr('href', function () {
             return this.href.replace(/&__swhg=[0-9]{13}/, '');
         });
     }
-    function sendBatchNoToDevice(batchNo) {
+    function sendBatchNoToDevice() {
+        var batchNo = $('#EditBatchNo').val();
+        var retrospectNo = $('#RetrospectNo').val();
+        var printCount = $('#PrintCount').val();
         $.post('/Batch/SendBatchNoes',
-            { 'BatchNo': batchNo },
+            { 'BatchNo': batchNo, 'RetrospectNo': retrospectNo, 'PrintCount': printCount },
             function (result) {
                 if (result == "发送成功") {
                     $('#btn_' + batchNo).parent().html('已发送');
