@@ -198,7 +198,10 @@ namespace YinXiang.Controllers
                     client.TcpClient.SendTimeout = 500;
 
                     client.TcpClient.Connect(device.IP, device.Port);
-                    var response = client.Send("02" + sendBatchDto.RetrospectNo + "," + sendBatchDto.PrintCount + "03");
+                    //var response = client.Send("02" + sendBatchDto.RetrospectNo + "," + sendBatchDto.PrintCount + "03");
+
+                    var content = $"{sendBatchDto.RetrospectNo},{sendBatchDto.PrintCount}";
+                    var response = client.Send(content);
                     client.TcpClient.Close();
                     return SendSucess(sendBatchDto);
                 }
