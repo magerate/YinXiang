@@ -293,6 +293,7 @@
     <Compile Include="Controllers\UpdateBatchStockHistoryController.cs" />
     <Compile Include="Controllers\SendBatchDeviceHistoryController.cs" />
     <Compile Include="Devices\iMarkClient.cs" />
+    <Compile Include="Devices\TcpClientExtension.cs" />
     <Compile Include="Devices\X30Client.cs" />
     <Compile Include="Devices\X30Packet.cs" />
     <Compile Include="Global.asax.cs">
