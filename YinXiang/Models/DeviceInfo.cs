@@ -8,6 +8,7 @@ namespace YinXiang.Models
     {
         X30,
         iMark,
+        _9410,
     }
 
     public class ManageDeviceViewModel

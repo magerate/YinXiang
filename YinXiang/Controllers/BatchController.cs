@@ -210,6 +210,26 @@ namespace YinXiang.Controllers
                     return Content($"发送失败--{e.Message}");
                 }
             }
+            else if (device.Type == DeviceType._9410)
+            {
+                try
+                {
+                    var client = new System.Net.Sockets.TcpClient();
+                    client.ReceiveTimeout = 500;
+                    client.SendTimeout = 500;
+
+                    client.Connect(device.IP, device.Port);
+                    //var response = client.Send("02" + sendBatchDto.RetrospectNo + "," + sendBatchDto.PrintCount + "03");
+
+                    client.Send(System.Text.Encoding.ASCII, sendBatchDto.RetrospectNo);
+                    client.Close();
+                    return SendSucess(sendBatchDto);
+                }
+                catch (Exception e)
+                {
+                    return Content($"发送失败--{e.Message}");
+                }
+            }
             else
             {
                 return Content($"设备类型配置错误 {device.Name} {device.Type}");
