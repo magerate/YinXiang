@@ -103,8 +103,8 @@ namespace YinXiang.Controllers
                     applicationDbContext.Entry<BatchInfo>(oldItem).State = EntityState.Modified;
                 }
                 applicationDbContext.SaveChanges();
-                //item.IsSent = false;
-                item.IsSent = applicationDbContext.SendBatchDeviceHistories.Any(m => m.RetrospectNo == item.retrospectNo);
+                item.IsSent = false;
+                //item.IsSent = applicationDbContext.SendBatchDeviceHistories.Any(m => m.RetrospectNo == item.retrospectNo);
             }
             batchResultDto.obj.Where(m => m.batchDate >= startBatchDate && m.batchDate <= endBatchDate);
             if (!string.IsNullOrEmpty(search.batchNo))
@@ -167,7 +167,7 @@ namespace YinXiang.Controllers
                     var client = new X30Client();
                     await client.ConnectAsync(device.IP);
                     var jobCommand = JobCommand.CreateJobUpdate();
-                    jobCommand.Fields.Add(device.JobFieldName, "02"+sendBatchDto.RetrospectNo+"03");
+                    jobCommand.Fields.Add(device.JobFieldName, sendBatchDto.RetrospectNo);
                     await client.UpdateJob(jobCommand);
                     client.TcpClient.Close();
                     return SendSucess(sendBatchDto);
