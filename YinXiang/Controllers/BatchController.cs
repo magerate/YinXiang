@@ -201,7 +201,7 @@ namespace YinXiang.Controllers
                     //var response = client.Send("02" + sendBatchDto.RetrospectNo + "," + sendBatchDto.PrintCount + "03");
 
                     var content = $"{sendBatchDto.RetrospectNo},{sendBatchDto.PrintCount}";
-                    var response = client.Send(content);
+                    client.Send(content);
                     client.TcpClient.Close();
                     return SendSucess(sendBatchDto);
                 }

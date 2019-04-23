@@ -32,7 +32,7 @@ namespace YinXiang
             return responseStr;
         }
 
-        public string Send(string message)
+        public void Send(string message)
         {
             var endChar = (char)EndChar;
             var startChar = (char)StartChar;
@@ -42,12 +42,12 @@ namespace YinXiang
             NetworkStream stream = TcpClient.GetStream();
             stream.Write(data, 0, data.Length);
 
-            data = new Byte[256];
+            //data = new Byte[256];
 
-            // Read the first batch of the TcpServer response bytes.
-            int bytesRead = stream.Read(data, 0, data.Length);
-            var responseStr = Encoding.GetString(data, 0, bytesRead);
-            return responseStr;
+            //// Read the first batch of the TcpServer response bytes.
+            //int bytesRead = stream.Read(data, 0, data.Length);
+            //var responseStr = Encoding.GetString(data, 0, bytesRead);
+            //return responseStr;
         }
     }
 }
