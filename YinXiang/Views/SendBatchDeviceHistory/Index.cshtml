@@ -41,14 +41,14 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="formGroupExampleInput">批次码</label>
-                    <input type="text" class="form-control" id="EditBatchNo" name="batchNo" placeholder="批次码" readonly>
+                    <label for="formGroupExampleInput">溯源码</label>
+                    <input type="text" class="form-control" id="EditBatchNo" name="batchNo" placeholder="溯源码" readonly>
                 </div>
                 <div class="form-group">
                     <label for="formGroupExampleInput">入库数量</label>
                 </div>
                 <div class="input-group">
-                    <input type="text" class="form-control bfh-number" data-min="5" data-max="25" id="TotalNumber" name="totalNumber" placeholder="入库数量" readonly>
+                    <input type="text" class="form-control bfh-number" data-min="5" data-max="25" id="TotalNumber" name="totalNumber" placeholder="入库数量">
                     <div class="invalid-feedback">
                         只能输入数字
                     </div>
@@ -68,7 +68,7 @@
             var button = $(event.relatedTarget);
             var objData = button.data('whatever');
             var modal = $(this);
-            modal.find('#EditBatchNo').val(objData.BatchNo);
+            modal.find('#EditBatchNo').val(objData.RetrospectNo);
             modal.find('#TotalNumber').val(objData.ScannedCounts);
         })
     });
@@ -91,9 +91,9 @@
         return;
     }
     function saveStockNumber() {
-        var batchNo = $('#EditBatchNo').val();
+        var retrospectNo = $('#EditBatchNo').val();
         var totalNumber = $('#TotalNumber').val();
-        $.post('/SendBatchDeviceHistory/UpdateBatchStock', { batchNo: batchNo, totalNumber: totalNumber },
+        $.post('/SendBatchDeviceHistory/UpdateBatchStock', { retrospectNo: retrospectNo, totalNumber: totalNumber },
             function (result) {
                 var objJson = eval('(' + result + ')');
                 if (objJson.success) {
