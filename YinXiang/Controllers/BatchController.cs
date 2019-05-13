@@ -103,8 +103,8 @@ namespace YinXiang.Controllers
                     applicationDbContext.Entry<BatchInfo>(oldItem).State = EntityState.Modified;
                 }
                 applicationDbContext.SaveChanges();
-                //item.IsSent = false;
-                item.IsSent = applicationDbContext.SendBatchDeviceHistories.Any(m => m.RetrospectNo == item.retrospectNo);
+                item.IsSent = false;
+                //item.IsSent = applicationDbContext.SendBatchDeviceHistories.Any(m => m.RetrospectNo == item.retrospectNo);
             }
             batchResultDto.obj.Where(m => m.batchDate >= startBatchDate && m.batchDate <= endBatchDate);
             if (!string.IsNullOrEmpty(search.batchNo))
@@ -167,7 +167,7 @@ namespace YinXiang.Controllers
                     var client = new X30Client();
                     await client.ConnectAsync(device.IP);
                     var jobCommand = JobCommand.CreateJobUpdate();
-                    jobCommand.Fields.Add(device.JobFieldName, "02"+sendBatchDto.RetrospectNo+"03");
+                    jobCommand.Fields.Add(device.JobFieldName, sendBatchDto.RetrospectNo);
                     await client.UpdateJob(jobCommand);
                     client.TcpClient.Close();
                     return SendSucess(sendBatchDto);
@@ -198,8 +198,31 @@ namespace YinXiang.Controllers
                     client.TcpClient.SendTimeout = 500;
 
                     client.TcpClient.Connect(device.IP, device.Port);
-                    var response = client.Send("02" + sendBatchDto.RetrospectNo + "," + sendBatchDto.PrintCount + "03");
+                    //var response = client.Send("02" + sendBatchDto.RetrospectNo + "," + sendBatchDto.PrintCount + "03");
+
+                    var content = $"{sendBatchDto.RetrospectNo},{sendBatchDto.PrintCount}";
+                    client.Send(content);
                     client.TcpClient.Close();
+                    return SendSucess(sendBatchDto);
+                }
+                catch (Exception e)
+                {
+                    return Content($"发送失败--{e.Message}");
+                }
+            }
+            else if (device.Type == DeviceType._9410)
+            {
+                try
+                {
+                    var client = new System.Net.Sockets.TcpClient();
+                    client.ReceiveTimeout = 500;
+                    client.SendTimeout = 500;
+
+                    client.Connect(device.IP, device.Port);
+                    //var response = client.Send("02" + sendBatchDto.RetrospectNo + "," + sendBatchDto.PrintCount + "03");
+
+                    client.Send(System.Text.Encoding.ASCII, sendBatchDto.RetrospectNo);
+                    client.Close();
                     return SendSucess(sendBatchDto);
                 }
                 catch (Exception e)

@@ -293,6 +293,7 @@
     <Compile Include="Controllers\UpdateBatchStockHistoryController.cs" />
     <Compile Include="Controllers\SendBatchDeviceHistoryController.cs" />
     <Compile Include="Devices\iMarkClient.cs" />
+    <Compile Include="Devices\TcpClientExtension.cs" />
     <Compile Include="Devices\X30Client.cs" />
     <Compile Include="Devices\X30Packet.cs" />
     <Compile Include="Global.asax.cs">
@@ -464,6 +465,7 @@
     <Content Include="Views\UpdateBatchStockHistory\Index.cshtml" />
     <Content Include="Views\ManageDevice\EditDeviceInto.cshtml" />
     <Content Include="Views\ApiSetting\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
