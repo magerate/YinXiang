@@ -194,8 +194,9 @@ namespace YinXiang
                         .WithHeaderText(" ")
                         .WithValueExpression((p, c) => p.IsSent ? "已发送" : ("<a id='btn_" + p.batchNo
                         + "' class='btn' href='javascript:void(0);' data-toggle='modal' "
-                        + "data-target='#sendBatchModal' data-whatever='{\"BatchNo\":\"" + p.batchNo
-                        + "\",\"RetrospectNo\":\"" + p.retrospectNo + "\"}'>发送</a>"));
+                        + "data-target='#sendBatchModal' data-whatever='"
+                        + JsonHelp.ToJson(p, new Dictionary<string, string>() { { "batchDate", "yyyy-MM-dd" }, { "createDate", "yyyy-MM-dd HH:dd:ss" } })
+                        + "'>发送</a>"));
                 })
                 .WithFiltering(true)
                 .WithPreloadData(false)
@@ -251,7 +252,7 @@ namespace YinXiang
             MVCGridDefinitionTable.Add("SendBatchDeviceHistoryGrid", new MVCGridBuilder<SendBatchDeviceHistoryDto>(colDefauls)
                 .AddColumns(cols =>
                 {
-                    cols.Add("BatchNo").WithHeaderText("批次码")
+                    cols.Add("BatchNo").WithHeaderText("生产单号")
                         .WithValueExpression(p => p.BatchNo);
                     cols.Add("RetrospectNo").WithHeaderText("溯源码")
                         .WithValueExpression(p => p.RetrospectNo);
@@ -259,7 +260,7 @@ namespace YinXiang
                         .WithValueExpression(p => p.ProductName);
                     cols.Add("SKU").WithHeaderText("产品规格")
                         .WithValueExpression(p => p.SKU);
-                    cols.Add("BatchDate").WithHeaderText("日期")
+                    cols.Add("BatchDate").WithHeaderText("生产日期（批次）")
                         .WithValueExpression(p => p.BatchDate != null ? p.BatchDate.ToString("yyyy-MM-dd") : "");
                     cols.Add("DeviceName").WithHeaderText("设备名称")
                         .WithValueExpression(p => p.DeviceName);
@@ -277,8 +278,9 @@ namespace YinXiang
                         .WithSorting(false)
                         .WithHeaderText(" ")
                         .WithValueExpression((p, c) => "<a class='btn' href='javascript:void(0);' data-toggle='modal' "
-                        +"data-target='#updateBatchStockModal' data-whatever='{\"BatchNo\":\"" + p.BatchNo 
-                        + "\",\"RetrospectNo\":\"" + p.RetrospectNo + "\",\"ScannedCounts\":" + p.ScannedCounts + "}'>入库</a>");
+                        + "data-target='#updateBatchStockModal' data-whatever='"
+                        + JsonHelp.ToJson(p, new Dictionary<string, string>() { { "BatchDate", "yyyy-MM-dd" }, { "CreateTime", "yyyy-MM-dd HH:dd:ss" } })
+                        + "'>入库</a>");
                 })
                 .WithPreloadData(false)
                 .WithSorting(true, "BatchNo")
@@ -346,7 +348,7 @@ namespace YinXiang
             MVCGridDefinitionTable.Add("UpdateBatchStockHistoryGrid", new MVCGridBuilder<UpdateBatchStockHistoryDto>(colDefauls)
                 .AddColumns(cols =>
                 {
-                    cols.Add("BatchNo").WithHeaderText("批次码")
+                    cols.Add("BatchNo").WithHeaderText("生产单号")
                         .WithValueExpression(p => p.BatchNo);
                     cols.Add("RetrospectNo").WithHeaderText("溯源码")
                         .WithValueExpression(p => p.RetrospectNo);
@@ -356,7 +358,7 @@ namespace YinXiang
                       .WithValueExpression(p => p.SKU);
                     cols.Add("TotalNumber").WithHeaderText("入库数量")
                       .WithValueExpression(p => p.TotalNumber.ToString());
-                    cols.Add("BatchDate").WithHeaderText("日期")
+                    cols.Add("BatchDate").WithHeaderText("生产日期（批次）")
                         .WithValueExpression(p => p.BatchDate != null ? p.BatchDate.ToString("yyyy-MM-dd") : "");
                     cols.Add("CreateTime").WithHeaderText("创建时间")
                         .WithValueExpression(p => p.CreateTime != null ? p.CreateTime.ToString("yyyy-MM-dd HH:dd:ss") : "");

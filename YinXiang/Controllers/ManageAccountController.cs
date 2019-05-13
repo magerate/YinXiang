@@ -41,8 +41,8 @@ namespace YinXiang.Controllers
         public ActionResult Index()
         {
             IEnumerable<ApplicationUser> model = ApplicationContext.Users;
-            var roles = ApplicationContext.Roles.OrderBy(m => m.Name).ToList();
-            ViewBag.RoleList = new SelectList(roles, "Name", "Name", "Owner"); ;
+            var roles = ApplicationContext.Roles.Where(m=>m.Name=="Admin").OrderBy(m => m.Name).ToList();
+            ViewBag.RoleList = new SelectList(roles, "Name", "Name"); ;
             return View(model);
         }
 

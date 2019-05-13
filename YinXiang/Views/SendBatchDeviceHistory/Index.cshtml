@@ -1,5 +1,5 @@
 ﻿<div class="container-fluid">
-    <h3>发送记录</h3>
+    <h3>数据入库</h3>
     <hr>
     <div style="display:none;">
         <form id="frmSendBatchDeviceHistorySearch">
@@ -41,14 +41,30 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="formGroupExampleInput">批次码</label>
-                    <input type="text" class="form-control" id="EditBatchNo" name="batchNo" placeholder="批次码" readonly>
+                    <label for="formGroupExampleInput">产品名称</label>
+                    <input type="text" class="form-control" id="EditProductName" name="productName" placeholder="产品名称" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">产品规格</label>
+                    <input type="text" class="form-control" id="EditSKU" name="sku" placeholder="产品规格" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">生产单号</label>
+                    <input type="text" class="form-control" id="EditBatchNo" name="batchNo" placeholder="生产单号" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">生产日期（批次）</label>
+                    <input type="text" class="form-control" id="EditBatchDate" name="batchDate" placeholder="生产日期（批次）" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">溯源码</label>
+                    <input type="text" class="form-control" id="EditRetrospectNo" name="retrospectNo" placeholder="溯源码" readonly>
                 </div>
                 <div class="form-group">
                     <label for="formGroupExampleInput">入库数量</label>
                 </div>
                 <div class="input-group">
-                    <input type="text" class="form-control bfh-number" data-min="5" data-max="25" id="TotalNumber" name="totalNumber" placeholder="入库数量" readonly>
+                    <input type="text" class="form-control bfh-number" data-min="5" data-max="25" id="TotalNumber" name="totalNumber" placeholder="入库数量" onkeyup="isNumber(event)" >
                     <div class="invalid-feedback">
                         只能输入数字
                     </div>
@@ -68,7 +84,11 @@
             var button = $(event.relatedTarget);
             var objData = button.data('whatever');
             var modal = $(this);
+            modal.find('#EditProductName').val(objData.ProductName);
+            modal.find('#EditSKU').val(objData.SKU);
             modal.find('#EditBatchNo').val(objData.BatchNo);
+            modal.find('#EditBatchDate').val(objData.BatchDate);
+            modal.find('#EditRetrospectNo').val(objData.RetrospectNo);
             modal.find('#TotalNumber').val(objData.ScannedCounts);
         })
     });
@@ -91,9 +111,12 @@
         return;
     }
     function saveStockNumber() {
-        var batchNo = $('#EditBatchNo').val();
+        if ($('#TotalNumber').hasClass("is-invalid")) {
+            return;
+        }
+        var retrospectNo = $('#EditRetrospectNo').val();
         var totalNumber = $('#TotalNumber').val();
-        $.post('/SendBatchDeviceHistory/UpdateBatchStock', { batchNo: batchNo, totalNumber: totalNumber },
+        $.post('/SendBatchDeviceHistory/UpdateBatchStock', { retrospectNo: retrospectNo, totalNumber: totalNumber },
             function (result) {
                 var objJson = eval('(' + result + ')');
                 if (objJson.success) {

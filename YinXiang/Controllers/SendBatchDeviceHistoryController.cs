@@ -96,7 +96,7 @@ namespace YinXiang.Controllers
             var batchItem = ApplicationContext.BatchInfos.Where(m => m.RetrospectNo == entity.retrospectNo).FirstOrDefault();
             if (batchItem == null)
             {
-                return Content("此批次码不存在");
+                return Content("此溯源码不存在");
             }
             ApiSetting apiSetting = ApplicationContext.ApiSettings.FirstOrDefault() ?? new ApiSetting();
             if (apiSetting.Id == 0)
@@ -132,6 +132,13 @@ namespace YinXiang.Controllers
                 batchItem.RetrospectNo = entity.retrospectNo;
                 batchItem.Quantity = entity.totalNumber;
                 ApplicationContext.Entry<BatchInfo>(batchItem).State = EntityState.Modified;
+                ApplicationContext.SaveChanges();
+            }
+
+            var sendBatchDeviceHistoryItem = ApplicationContext.SendBatchDeviceHistories.Where(m => m.RetrospectNo == entity.retrospectNo).FirstOrDefault();
+            if (sendBatchDeviceHistoryItem != null)
+            {
+                ApplicationContext.SendBatchDeviceHistories.Remove(sendBatchDeviceHistoryItem);
                 ApplicationContext.SaveChanges();
             }
             return Content(response.Content);
