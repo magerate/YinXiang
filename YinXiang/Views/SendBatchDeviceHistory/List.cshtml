@@ -1,0 +1,25 @@
+﻿@using YinXiang.Models.Dtos
+@model IList<SendBatchDeviceHistoryDto>
+@{ Layout = null;}
+<div class="table-responsive" id="sendBatchHistoryGrid">
+    @{
+        var grid = new WebGrid(defaultSort: "BatchNo", rowsPerPage: 20,ajaxUpdateContainerId: "sendBatchHistoryGrid",
+            ajaxUpdateCallback: "sortCallback()");
+        grid.Bind(Model, autoSortAndPage: false, rowCount: ViewBag.TotalRowCounts);
+    }
+    @grid.GetHtml(columns: grid.Columns(
+             grid.Column("BatchNo", header: "批次码"),
+             grid.Column("ProductName", header: "产品名称"),
+             grid.Column("SKU", header: "产品规格"),
+             grid.Column("BatchDate", header: "日期", format: @<text>@item.batchDate.ToString("yyyy-MM-dd")</text>),
+             grid.Column("DeviceName", header: "设备名称"),
+             grid.Column("IP", header: "ip地址"),
+             grid.Column("Account", header: "绑定账号"),
+             grid.Column("CreateTime", header: "时间", format: @<text>@(item.CreateTime.ToString("yyyy-MM-dd HH:dd:ss"))</text>),
+             grid.Column("ScannedCounts", header: "扫描次数"),
+             grid.Column(format: (item) => Html.Raw("<a class='btn' href='javascript:void(0);' data-toggle='modal' data-target='#updateBatchStockModal' data-whatever='{\"BatchNo\":\"" + item.BatchNo + "\",\"ScannedCounts\":" + item.ScannedCounts + "}'>入库</a>"))
+             ),
+                              tableStyle: "table table-bordered"
+                              )
+</div>
+

@@ -6,18 +6,23 @@
 }
 
 <div class="card card-login mx-auto mt-5">
-    <div class="card-header">登陆</div>
+    <div class="card-header">
+        <div style="margin: 0;text-align: center; font-size: 22px;">
+        <img src="~/Content/images/YingXiang.png" style="width:100%;"/>
+        </div>
+    </div>
     <div class="card-body">
         @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
         {
             @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">
                 <div class="form-label-group">
                     @*@Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-        </div>*@
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>*@
                     @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
                     @*<input class="form-control" data-val="true" data-val-required="用户名字段是必需的。" id="UserName" name="UserName" type="text" value="" />*@

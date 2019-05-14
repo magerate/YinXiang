@@ -1,5 +1,5 @@
 ﻿@using YinXiang.Models
-@model IEnumerable<DeviceInfo>
+@model ManageDeviceViewModel
 
 
 <div class="container-fluid">
@@ -25,18 +25,21 @@
             </ul>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
-                @{
-                    var grid = new WebGrid(Model);
-                }
-                @grid.GetHtml(columns: grid.Columns(
-                                grid.Column("Name", header: "设备名称"),
-                                grid.Column("IP", header: "ip地址"),
-                                grid.Column("Account", header: "绑定账号"),
-                                grid.Column("CreateTime", header: "添加日期", format:  @<text>@item.CreateTime.ToString("d")</text>)
-                             ),
-                         tableStyle: "table table-bordered")
-            </div>
+            @*<div class="table-responsive">
+            @{
+                var grid = new WebGrid(Model.Devices);
+            }
+            @grid.GetHtml(columns: grid.Columns(
+                            grid.Column("Device.Name", header: "设备名称"),
+                            grid.Column("Device.Type", header: "设备类型"),
+                            grid.Column("Device.IP", header: "ip地址"),
+                            grid.Column("User.UserName", header: "绑定账号"),
+                            grid.Column("Device.CreateTime", header: "添加日期", format:  @<text>@item.Device.CreateTime.ToString("d")</text>),
+                            grid.Column(format: (item) => (Html.Raw("<a class='btn' href='javascript:void(0);'onclick='openEditDevice(" + item.Device.Id + ")'>编辑</a><a class='btn' href='javascript:void(0);'onclick='deleteDevice(" + item.Device.Id + ")'>删除</a>")))
+                ),
+         tableStyle: "table table-bordered")
+        </div>*@
+            @Html.MVCGrid("ManageDeviceGrid")
         </div>
     </div>
 
@@ -46,12 +49,12 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">申请批次码</h5>
+                <h5 class="modal-title" id="exampleModalCenterTitle">添加设备</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            @using (Html.BeginForm("addDevice", "ManageDevice", FormMethod.Post))
+            @using (Html.BeginForm("AddDevice", "ManageDevice", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
                 <div class="modal-body">
@@ -61,12 +64,29 @@
                         <input type="text" class="form-control" id="Name" name="Name" placeholder="设备名称">
                     </div>
                     <div class="form-group">
+                        <label for="formGroupExampleInput">类型</label>
+                        @Html.DropDownList("Type",
+                        new SelectList(Enum.GetValues(typeof(DeviceType))),
+                        "选择设备类型",
+                        new { @class = "form-control" })
+                        @*<input type="text" class="form-control" id="Type" name="Type" placeholder="设备名称">*@
+                    </div>
+                    <div class="form-group">
                         <label for="formGroupExampleInput">IP地址</label>
-                        <input type="text" class="form-control" id="IP" name="IP"  placeholder="IP地址">
+                        <input type="text" class="form-control" id="IP" name="IP" placeholder="IP地址">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">端口</label>
+                        <input type="text" class="form-control" id="Port" name="Port" placeholder="端口">
+                    </div>
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">作业键值</label>
+                        <input type="text" class="form-control" id="JobFieldName" name="JobFieldName" placeholder="作业键值">
                     </div>
                     <div class="form-group">
                         <label for="formGroupExampleInput">账号</label>
-                        <input type="text" class="form-control" id="Account" name="Account" placeholder="账号">
+                        @Html.DropDownList("UserId", Model.AccountItems, "选择账号", new { @class = "form-control" })
+                        @*<input type="text" class="form-control" id="Account" name="Account" placeholder="账号">*@
                     </div>
 
                 </div>
@@ -79,5 +99,26 @@
 
     </div>
 </div>
+<script>
+    function openEditDevice(id) {
+        boostrapDialog('编辑设备', 500,null,  '/ManageDevice/EditDeviceInto?id=' + id, '', 'EditDeviceInfoButtons', 'EditDeviceInfoDiv');
+    }
+    function saveDeviceInfo() {
+        Post('/ManageDevice/EditDevice', function (result) {
+            $('#EditDeviceInfoDiv').modal('hide');
+            MVCGrid.reloadGrid('ManageDeviceGrid');
+        }, 'frmEditDeviceInfo')
+    }
+    function deleteDevice(id) {
+        Post('/ManageDevice/DeleteDevice?id=' + id, function (result) {
+            if (result == '删除成功') {
+                MVCGrid.reloadGrid('ManageDeviceGrid');
+                return;
+            }
+            alert(result);
+        });
+    }
+</script>
+
 
 

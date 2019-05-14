@@ -1,0 +1,130 @@
+﻿<div class="container-fluid">
+    <h3>数据入库</h3>
+    <hr>
+    <div style="display:none;">
+        <form id="frmSendBatchDeviceHistorySearch">
+            <div class="form-row col-md-12">
+                <div class="form-group col-md-3">
+                    <label for="formGroupExampleInput">日期</label>
+                    <div class="input-group date" data-provide="datepicker" data-date-format="yyyy-mm-dd">
+                        <input type="text" class="form-control" name="CreateTime" value="@(ViewBag.CreateTime.ToString("yyyy-MM-dd"))">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    <label for="formGroupExampleInput"> </label>
+                    <a class="btn" href="javascript:void(0);" onclick="loadSendBatchDeviceHistoryData()">获取</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card mb-3">
+        <div id="SendBatchDeviceHistoryListDiv" class="card-body">
+            @Html.MVCGrid("SendBatchDeviceHistoryGrid")
+        </div>
+    </div>
+    <!-- Page Content -->
+    @*<h1>Blank Page</h1>
+        <hr>
+        <p>This is a great starting point for new custom pages.</p>*@
+</div>
+<div class="modal fade" id="updateBatchStockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">入库</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="formGroupExampleInput">产品名称</label>
+                    <input type="text" class="form-control" id="EditProductName" name="productName" placeholder="产品名称" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">产品规格</label>
+                    <input type="text" class="form-control" id="EditSKU" name="sku" placeholder="产品规格" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">生产单号</label>
+                    <input type="text" class="form-control" id="EditBatchNo" name="batchNo" placeholder="生产单号" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">生产日期（批次）</label>
+                    <input type="text" class="form-control" id="EditBatchDate" name="batchDate" placeholder="生产日期（批次）" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">溯源码</label>
+                    <input type="text" class="form-control" id="EditRetrospectNo" name="retrospectNo" placeholder="溯源码" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="formGroupExampleInput">入库数量</label>
+                </div>
+                <div class="input-group">
+                    <input type="text" class="form-control bfh-number" data-min="5" data-max="25" id="TotalNumber" name="totalNumber" placeholder="入库数量" onkeyup="isNumber(event)" >
+                    <div class="invalid-feedback">
+                        只能输入数字
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="submit" class="btn btn-primary" onclick="saveStockNumber()">上传</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/jquery/jquery.js"></script>
+<script>
+    $(function () {
+        $('#updateBatchStockModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var objData = button.data('whatever');
+            var modal = $(this);
+            modal.find('#EditProductName').val(objData.ProductName);
+            modal.find('#EditSKU').val(objData.SKU);
+            modal.find('#EditBatchNo').val(objData.BatchNo);
+            modal.find('#EditBatchDate').val(objData.BatchDate);
+            modal.find('#EditRetrospectNo').val(objData.RetrospectNo);
+            modal.find('#TotalNumber').val(objData.ScannedCounts);
+        })
+    });
+    function loadSendBatchDeviceHistoryData() {
+        location.href = '/SendBatchDeviceHistory/Index?' + $('#frmSendBatchDeviceHistorySearch').trimSerialize();
+    }
+    function sortCallback() {
+        $('a[data-swhglnk="true"]').attr('href', function () {
+            return this.href.replace(/&__swhg=[0-9]{13}/, '');
+        });
+    }
+    function isNumber(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if ((charCode > 31 && charCode < 48) || charCode > 57) {
+            $('#TotalNumber').addClass('is-invalid');
+            return;
+        }
+        $('#TotalNumber').removeClass('is-invalid');
+        return;
+    }
+    function saveStockNumber() {
+        if ($('#TotalNumber').hasClass("is-invalid")) {
+            return;
+        }
+        var retrospectNo = $('#EditRetrospectNo').val();
+        var totalNumber = $('#TotalNumber').val();
+        $.post('/SendBatchDeviceHistory/UpdateBatchStock', { retrospectNo: retrospectNo, totalNumber: totalNumber },
+            function (result) {
+                var objJson = eval('(' + result + ')');
+                if (objJson.success) {
+                    $('#TotalNumber').val('0');
+                    $('#updateBatchStockModal').modal('hide');
+                }
+                $('#alertMsgModal .modal-body').html(objJson.msg);
+                $('#alertMsgModal').modal('show');
+            })
+    };
+</script>

@@ -1,0 +1,46 @@
+﻿@using YinXiang.Models
+@model ApiSetting
+<div class="container-fluid">
+    <h3>其它</h3>
+    <hr>
+
+    <div class="card mb-3">
+        @*<div class="card-header">
+        </div>*@
+        <div class="card-body">
+            <div>
+                <form id="frmEditApiSetting">
+                    <input type="hidden" name="Id" value="@Model.Id" />
+                    <div class="form-group">
+                        <label for="formGroupExampleInput">Api地址</label>
+                        <input type="text" class="form-control" id="ApiUrl" name="ApiUrl" placeholder="Api地址" value="@Model.ApiUrl">
+                    </div>
+                </form>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary" onclick="saveApiSetting()">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="alertMsgModal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalCenterTitle"> </h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>
+<script>
+    function saveApiSetting() {
+        Post('/ApiSetting/SaveApiSetting', function (result) {
+            $('#alertMsgModal .modal-body').html(result);
+            $('#alertMsgModal').modal('show');
+        }, 'frmEditApiSetting')
+    }
+</script>

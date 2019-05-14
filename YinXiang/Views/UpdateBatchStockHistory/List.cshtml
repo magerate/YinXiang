@@ -1,0 +1,21 @@
+﻿@using YinXiang.Models.Dtos
+@model IList<UpdateBatchStockHistoryDto>
+@{ Layout = null;}
+<div class="table-responsive" id="updateBatchStockGrid">
+    @{
+        var grid = new WebGrid(defaultSort: "BatchNo", rowsPerPage: 20, ajaxUpdateContainerId: "updateBatchStockGrid",
+            ajaxUpdateCallback: "sortCallback()");
+        grid.Bind(Model, autoSortAndPage: false, rowCount: ViewBag.TotalRowCounts);
+    }
+    @grid.GetHtml(columns: grid.Columns(
+             grid.Column("BatchNo", header: "批次码"),
+             grid.Column("ProductName", header: "产品名称"),
+             grid.Column("SKU", header: "产品规格"),
+             grid.Column("TotalNumber", header: "入库数量"),
+             grid.Column("BatchDate", header: "日期", format: @<text>@item.batchDate.ToString("yyyy-MM-dd")</text>),
+             grid.Column("CreateTime", header: "创建时间", format: @<text>@(item.CreateTime.ToString("yyyy-MM-dd HH:dd:ss"))</text>)
+                                   ),
+                                                    tableStyle: "table table-bordered"
+                                                    )
+</div>
+
