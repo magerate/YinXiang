@@ -110,8 +110,8 @@
             var button = $(event.relatedTarget);
             var objData = button.data('whatever');
             var modal = $(this);
-            modal.find('#EditBatchNo').val(objData.BatchNo);
-            modal.find('#EditRetrospectNo').val(objData.RetrospectNo);
+            modal.find('#EditBatchNo').val(objData.batchNo);
+            modal.find('#EditRetrospectNo').val(objData.retrospectNo);
         })
     });
     function loadBatchData() {

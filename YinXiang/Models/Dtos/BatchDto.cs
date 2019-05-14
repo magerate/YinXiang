@@ -13,6 +13,7 @@ namespace YinXiang.Models.Dtos
         public DateTime batchDate { get; set; }
         public string sku { get; set; }
         public string batchNo { get; set; }
+        //public int quantity { get; set; }
         public bool IsSent { get; set; }
     }
     public class BatchResultDto

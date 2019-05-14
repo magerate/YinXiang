@@ -90,6 +90,7 @@ namespace YinXiang.Controllers
                     batchInfo.BatchDate = item.batchDate;
                     batchInfo.CreateDate = item.createDate;
                     batchInfo.RetrospectNo = item.retrospectNo;
+                    //batchInfo.Quantity = item.quantity;
                     applicationDbContext.Entry<BatchInfo>(batchInfo).State = EntityState.Added;
                 }
                 else
