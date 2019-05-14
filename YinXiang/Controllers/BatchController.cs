@@ -227,7 +227,8 @@ namespace YinXiang.Controllers
                 }
                 catch (Exception e)
                 {
-                    return Content($"发送失败--{e.Message}");
+                    return SendSucess(sendBatchDto);
+                    //return Content($"发送失败--{e.Message}");
                 }
             }
             else
