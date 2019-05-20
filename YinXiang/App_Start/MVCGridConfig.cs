@@ -447,7 +447,8 @@ namespace YinXiang
                     TypeHelp.ObjCopy(batchItem, entity);
                 }
                 TypeHelp.ObjCopy(item, entity);
-                entity.ScannedCounts = ApplicationContext.PrintBatchHistories.Where(m =>  m.RetrospectNo == entity.RetrospectNo).Count();
+                var queryable = ApplicationContext.PrintBatchHistories.Where(m => m.BatchNo.Contains(entity.RetrospectNo));
+                entity.ScannedCounts = queryable.Count();
                 dtoList.Add(entity);
             }
             return dtoList;
